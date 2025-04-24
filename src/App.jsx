@@ -1,6 +1,7 @@
-import AddGameModal from './components/AddGameModal';
 import GameList from './components/GameList';
 import Header from './components/Header';
+import AddGameModal from './components/AddGameModal';
+import ViewGameModal from './components/ViewGameModal';
 import { GamesContextProvider } from './store/GamesContext';
 import { UserActionsContextProvider } from './store/UserActionsContext';
 function App() {
@@ -13,6 +14,7 @@ function App() {
 
           {/* Modals here */}
           <AddGameModal />
+          <ViewGameModal />
         </GamesContextProvider>
       </UserActionsContextProvider>
     </div>

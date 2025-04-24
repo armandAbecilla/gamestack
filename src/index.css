@@ -14,6 +14,9 @@
   --color-black-25: #46443c;
   --color-error: #6d0b0b;
   --color-body: '#ccdbf1';
+  --color-playing: #fbf2c4;
+  --color-backlog: #c7522a;
+  --color-wishlist: #e5c185;
 }
 
 body {
@@ -32,6 +35,7 @@ body {
   border: none;
   box-shadow: 0 1px 8px rgba(254, 254, 222, 0.3);
   /* padding: 1.5rem; */
+  outline: none;
   width: 80%;
   max-width: 60rem;
   animation: fade-slide-up 0.3s ease-out forwards;
@@ -43,6 +47,11 @@ body {
 
 .modal .dialog-inner {
   padding: 1.5rem;
+}
+
+/* For elements that fetched via API || dynamic content */
+.view-game-modal-description p:not(:first-child) {
+  margin-top: 0.8rem;
 }
 
 @keyframes fade-slide-up {

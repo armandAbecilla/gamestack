@@ -5,6 +5,7 @@ import express from 'express';
 import {
   getUserGamesCtrl,
   addUserGameCtrl,
+  viewGameDetailCtrl,
 } from './controllers/user-games-controller.js';
 
 const app = express();
@@ -21,6 +22,10 @@ app.use((req, res, next) => {
 
 app.get('/games', async (req, res) => {
   await getUserGamesCtrl(req, res);
+});
+
+app.get('/games/:id', async (req, res) => {
+  await viewGameDetailCtrl(req, res);
 });
 
 app.post('/games/add', async (req, res) => {

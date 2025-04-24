@@ -1,6 +1,9 @@
-export default function GameCard({ image, name }) {
+export default function GameCard({ image, name, onGameSelect }) {
   return (
-    <div className='bg-black-100 border-black-50 relative overflow-hidden rounded-lg border shadow'>
+    <div
+      className='bg-black-100 border-black-50 relative cursor-pointer overflow-hidden rounded-lg border shadow'
+      onClick={onGameSelect}
+    >
       <img
         className='aspect-video h-[180px] object-cover'
         src={image}

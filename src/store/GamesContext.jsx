@@ -3,11 +3,13 @@ import useHttp from '../hooks/useHttp';
 
 const GamesContext = createContext({
   games: [],
+  selectedGameData: {},
   isGamesFetching: false,
   refetchGames: () => {},
   setLoadedGames: () => {},
   addGame: (gameData) => {},
   removeGame: (gameId) => {},
+  setSelectedGame: (gameId) => {},
 });
 
 function gamesReducer(state, action) {
@@ -28,6 +30,13 @@ function gamesReducer(state, action) {
       items: items,
     };
   }
+
+  if (action.type === 'SET_SELECTED_GAME') {
+    return {
+      ...state,
+      selectedGameData: action.payload.data,
+    };
+  }
 }
 
 const config = {};
@@ -42,6 +51,7 @@ const config = {};
 export function GamesContextProvider({ children }) {
   const [game, dispatchGameAction] = useReducer(gamesReducer, {
     items: [],
+    selectedGameData: null,
   });
 
   // lets fetch and set the items state so that we can use it on any other components already
@@ -76,13 +86,24 @@ export function GamesContextProvider({ children }) {
     });
   }
 
+  function setSelectedGame(gameData) {
+    dispatchGameAction({
+      type: 'SET_SELECTED_GAME',
+      payload: {
+        data: gameData,
+      },
+    });
+  }
+
   const ctxValue = {
     games: game.items,
+    selectedGameData: game.selectedGameData,
     isGamesFetching,
     refetchGames,
     setLoadedGames,
     addGame,
     // removeGame,
+    setSelectedGame,
   };
   return (
     <GamesContext.Provider value={ctxValue}>{children}</GamesContext.Provider>

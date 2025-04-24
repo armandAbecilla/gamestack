@@ -5,6 +5,8 @@ const UserActionsContext = createContext({
   action: '', // could be "Add", "View", "Edit"
   showAdd: () => {},
   hideAdd: () => {},
+  showGameDetailView: () => {},
+  hideGameDetailView: () => {},
 });
 
 export function UserActionsContextProvider({ children }) {
@@ -18,10 +20,20 @@ export function UserActionsContextProvider({ children }) {
     setUserAction('');
   }
 
+  function showGameDetailView() {
+    setUserAction('view');
+  }
+
+  function hideGameDetailView() {
+    setUserAction('');
+  }
+
   const ctxValue = {
     action: userAction,
     showAdd,
     hideAdd,
+    showGameDetailView,
+    hideGameDetailView,
   };
 
   return (

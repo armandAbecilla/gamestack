@@ -1,9 +1,17 @@
 import { createPortal } from 'react-dom';
 import { useRef, useEffect, useCallback } from 'react';
 
-export default function Modal({ children, open, onClose, className = '' }) {
+export default function Modal({
+  children,
+  open,
+  onClose,
+  className = '',
+  dialogInnerClassName = '',
+  closeOnClickOutside = false,
+}) {
   const dialog = useRef();
   const innerContainer = useRef();
+  let dialogInnerClasses = 'dialog-inner';
 
   function handleClickOutside(event) {
     if (
@@ -19,18 +27,28 @@ export default function Modal({ children, open, onClose, className = '' }) {
 
     if (open) {
       modal.showModal();
-      // document.addEventListener('mousedown', handleClickOutside);
+
+      if (closeOnClickOutside) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
     }
 
     return () => {
       modal.close();
-      // document.removeEventListener('mousedown', handleClickOutside);
+
+      if (closeOnClickOutside) {
+        document.removeEventListener('mousedown', handleClickOutside);
+      }
     };
   }, [open]);
 
+  if (dialogInnerClassName !== '') {
+    dialogInnerClasses += ' ' + dialogInnerClassName;
+  }
+
   return createPortal(
     <dialog ref={dialog} className={`modal ${className}`} onClose={onClose}>
-      <div className='dialog-inner' ref={innerContainer}>
+      <div className={dialogInnerClasses} ref={innerContainer}>
         {children}
       </div>
     </dialog>,

@@ -96,7 +96,7 @@ export default function AddGameModal() {
           >
             Cancel
           </Button>
-          <Button disabled={isFormSubmitting}>
+          <Button type='submit' disabled={isFormSubmitting}>
             {isFormSubmitting ? 'Saving...' : 'Add'}{' '}
           </Button>
         </div>

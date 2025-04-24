@@ -7,7 +7,7 @@ const supabase = createClient(SUPA_BASE.url, SUPA_BASE.secretKey);
 export const getUserGames = async function () {
   const { data, error } = await supabase
     .from('UserGames')
-    .select('*, UserGamesMapping(*)')
+    .select(`*, details:UserGamesMapping(*)`)
     .order('id', { ascending: false });
 
   if (error) {
@@ -18,7 +18,8 @@ export const getUserGames = async function () {
     id: i.id,
     platform: i.platform,
     status: i.status,
-    details: i.UserGamesMapping[0],
+    notes: i.notes,
+    details: i.details[0],
   }));
 
   return games;
@@ -83,4 +84,34 @@ export const addUserGame = async function (gameData) {
   } catch (error) {
     throw new Error(error);
   }
+};
+
+export const viewGameDetails = async function (id) {
+  const { data, error } = await supabase
+    .from('UserGames')
+    .select(`*, details:UserGamesMapping(*)`)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  data.details = data.details[0];
+
+  // fetch other information from RAWG
+
+  try {
+    const response = await fetch(
+      `https://api.rawg.io/api/games/${data.details?.platform_id}?key=${RAWG.apiKey}`,
+    );
+    const resData = await response.json();
+
+    // append the description
+    data.description = resData.description;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+
+  return data;
 };
