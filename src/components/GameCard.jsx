@@ -1,0 +1,15 @@
+export default function GameCard({ image, name }) {
+  return (
+    <div className='bg-black-100 border-black-50 relative overflow-hidden rounded-lg border shadow'>
+      <img
+        className='aspect-video h-[180px] object-cover'
+        src={image}
+        alt={name}
+        title={name}
+      />
+      <div className='absolute bottom-0 w-full bg-[rgba(52,132,134,0.8)] px-2 py-2'>
+        <h3 className='truncate text-center text-sm'>{name}</h3>
+      </div>
+    </div>
+  );
+}

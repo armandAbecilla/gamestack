@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-body: 'Work Sans', sans-serif;
+  --font-heading: 'Rajdhani', sans-serif;
+  --color-darkgreen: #348486;
+  --color-darkgreen-100: #2b7d78;
+  --color-palegreen: #addacc;
+  --color-offwhite: #f8f1ca;
+  --color-black-200: #1f1a09;
+  --color-black-100: #1d1a16;
+  --color-black-50: #312c1d;
+  --color-black-25: #46443c;
+  --color-error: #6d0b0b;
+  --color-body: '#ccdbf1';
+}
+
+body {
+  font-family: var(--font-body);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #1d1a16;
+  color: #d9e2f1;
+  min-height: 100vh;
+}
+
+.modal {
+  background-color: rgba(25, 25, 25, 0.8);
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 1px 8px rgba(254, 254, 222, 0.3);
+  /* padding: 1.5rem; */
+  width: 80%;
+  max-width: 60rem;
+  animation: fade-slide-up 0.3s ease-out forwards;
+}
+
+.modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.modal .dialog-inner {
+  padding: 1.5rem;
+}
+
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
