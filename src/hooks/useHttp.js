@@ -30,6 +30,7 @@ export default function useHttp(url, config, initialData) {
       try {
         const resData = await sendHttpRequest(url, { ...config, body: data });
         setData(resData);
+        return resData; // also return the resData, if for submitting post request
       } catch (error) {
         setError(error.message || 'Something went wrong!');
       } finally {

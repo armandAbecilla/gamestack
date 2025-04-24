@@ -33,9 +33,10 @@ export default function AddGameModal() {
   const { sendRequest, clearData } = useHttp(
     'http://localhost:3000/games/add',
     requestConfig,
+    {},
   );
   const [state, addFormAction, isFormSubmitting] = useActionState(addAction);
-  const { refetchGames } = useContext(GamesContext);
+  const { refetchGames, addGame, games } = useContext(GamesContext);
 
   function handleClose() {
     hideAdd();
@@ -45,13 +46,18 @@ export default function AddGameModal() {
   async function addAction(prevForm, formData) {
     const addGameData = Object.fromEntries(formData.entries());
 
-    await sendRequest(
+    const newGameData = await sendRequest(
       JSON.stringify({
         gameData: addGameData,
       }),
     );
 
-    refetchGames();
+    // refetchGames(); // if we want the re-fetch approach
+
+    if (newGameData?.data) {
+      addGame(newGameData.data); // optimistic update
+    }
+
     handleClose();
   }
 

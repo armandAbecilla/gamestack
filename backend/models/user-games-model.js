@@ -7,7 +7,12 @@ const supabase = createClient(SUPA_BASE.url, SUPA_BASE.secretKey);
 export const getUserGames = async function () {
   const { data, error } = await supabase
     .from('UserGames')
-    .select('*, UserGamesMapping(*)');
+    .select('*, UserGamesMapping(*)')
+    .order('id', { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
 
   const games = data.map((i) => ({
     id: i.id,
@@ -41,8 +46,6 @@ export const addUserGame = async function (gameData) {
       .insert(newGame)
       .select();
 
-    console.log(userGameData);
-
     if (userGameError) {
       throw new Error(userGameError.message);
     }
@@ -61,12 +64,22 @@ export const addUserGame = async function (gameData) {
       throw new Error(userGameMappingError.message);
     }
 
-    const result = {
-      ...userGameData[0],
-      details: userGamesMappingData,
+    const insertedDetails = userGameData[0];
+    const insertedGameDetails = userGamesMappingData[0];
+
+    const createdData = {
+      id: insertedDetails.id,
+      platform: insertedDetails.platform,
+      notes: insertedDetails.notes,
+      status: insertedDetails.status,
+      details: {
+        id: insertedGameDetails.id,
+        name: insertedGameDetails.name,
+        background_image: insertedGameDetails.background_image,
+      },
     };
 
-    return result;
+    return createdData;
   } catch (error) {
     throw new Error(error);
   }

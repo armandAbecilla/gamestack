@@ -21,7 +21,7 @@ function gamesReducer(state, action) {
 
   if (action.type === 'ADD_ITEM') {
     const items = [...state.items];
-    items.push(action.payload.data);
+    items.unshift(action.payload.data);
 
     return {
       ...state,
