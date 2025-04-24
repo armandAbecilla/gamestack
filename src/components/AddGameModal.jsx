@@ -30,23 +30,19 @@ const requestConfig = {
 
 export default function AddGameModal() {
   const { action, hideAdd } = useContext(UserActionsContext);
-  const { sendRequest, clearData } = useHttp(
-    'http://localhost:3000/games/add',
-    requestConfig,
-    {},
-  );
+  const { sendRequest } = useHttp('', requestConfig, {});
   const [state, addFormAction, isFormSubmitting] = useActionState(addAction);
   const { refetchGames, addGame, games } = useContext(GamesContext);
 
   function handleClose() {
     hideAdd();
-    clearData();
   }
 
   async function addAction(prevForm, formData) {
     const addGameData = Object.fromEntries(formData.entries());
 
     const newGameData = await sendRequest(
+      'http://localhost:3000/games/add',
       JSON.stringify({
         gameData: addGameData,
       }),

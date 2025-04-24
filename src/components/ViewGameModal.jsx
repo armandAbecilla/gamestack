@@ -1,4 +1,4 @@
-import { act, useContext } from 'react';
+import { useContext } from 'react';
 import Modal from '../components/UI/Modal';
 import Badge from './UI/Badge';
 import PlatformIcon from './UI/PlatformIcon';
@@ -15,7 +15,7 @@ export default function ViewGameModal() {
 
   return (
     <Modal
-      className='m-auto max-w-full!' // set the max width
+      className='m-auto max-w-[1536px]!' // set the max width
       onClose={handleClose}
       dialogInnerClassName='p-0!' // remove the dialog inner padding
       closeOnClickOutside
@@ -32,7 +32,7 @@ export default function ViewGameModal() {
             <img
               src={selectedGameData.details.background_image}
               alt={selectedGameData.details.name}
-              className='aspect-video h-full max-h-[600px] min-h-[350px] w-full'
+              className='aspect-video h-full min-h-[350px] w-full object-cover'
             />
             {/* <PlatformIcon
               classNames='absolute top-2 right-2'
@@ -47,12 +47,16 @@ export default function ViewGameModal() {
               <Badge status={selectedGameData.status} />
             </div>
 
-            <div
-              className='view-game-modal-description text-stone-200'
-              dangerouslySetInnerHTML={{ __html: selectedGameData.description }}
-            />
+            <div className='flex flex-col'>
+              <div
+                className={`view-game-modal-description text-stone-200`}
+                dangerouslySetInnerHTML={{
+                  __html: selectedGameData.description,
+                }}
+              />
+            </div>
 
-            <div className='mt-auto'>
+            <div className='mt-10'>
               <h4 className='font-heading mb-2 text-xl text-stone-300'>
                 Your Notes:
               </h4>

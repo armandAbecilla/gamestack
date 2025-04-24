@@ -16,7 +16,8 @@ export default function Modal({
   function handleClickOutside(event) {
     if (
       innerContainer.current &&
-      !innerContainer.current.contains(event.target)
+      !innerContainer.current.contains(event.target) &&
+      event.button === 0 // only handle left clicks
     ) {
       onClose(); // User clicked outside the dialog
     }

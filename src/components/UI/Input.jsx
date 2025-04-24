@@ -1,8 +1,14 @@
-export default function Input({ label, id, textarea = false, ...props }) {
+export default function Input({
+  label,
+  id,
+  className,
+  textarea = false,
+  ...props
+}) {
   if (textarea) {
     return (
       <textarea
-        className='focus:outline-darkgreen w-full bg-white px-2 py-1 text-xl'
+        className={`w-full bg-white px-2 py-1 text-xl focus:outline-0 ${className}`}
         name={id}
         id={id}
         {...props}
@@ -12,7 +18,7 @@ export default function Input({ label, id, textarea = false, ...props }) {
 
   return (
     <input
-      className='focus:outline-darkgreen w-full bg-white px-2 py-1 text-xl'
+      className={`w-full bg-white px-2 py-1 text-xl focus:outline-0 ${className}`}
       id={id}
       name={id}
       {...props}
