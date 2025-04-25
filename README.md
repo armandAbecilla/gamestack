@@ -1,6 +1,6 @@
-# 🍔 Food Order App
+# Game Backlog Tracker
 
-> A sleek and interactive food ordering app built as part of the **React Complete Guide** code-along project.
+> My Personal gaming tracker.
 
 ---
 
@@ -34,3 +34,10 @@ This app includes a full implementation of core React concepts:
 - ⚡ **Vite** – Lightning-fast build tool
 - 🎨 **Tailwind CSS** – Utility-first CSS framework
 - ⚛️ **React** – JavaScript library for building UIs
+- **Supabase** - Free database
+- **NextJS** - Backend
+
+## 3rd Party APIs
+
+- **RAWG.io** - Database for Games (used for fetching Images, Details, etc)
+- **Cloudinary** - Used for optimizing images on-the-go
