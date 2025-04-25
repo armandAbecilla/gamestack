@@ -43,24 +43,51 @@ body:before {
   z-index: -1;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* top: 0; right: 0; bottom: 0; left: 0 */
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .modal {
-  background-color: rgba(25, 25, 25, 0.8);
-  border-radius: 6px;
-  border: none;
-  box-shadow: 0 1px 8px rgba(254, 254, 222, 0.3);
-  /* padding: 1.5rem; */
-  outline: none;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05); /* frosted look */
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px); /* <--- frosted effect */
+  -webkit-backdrop-filter: blur(16px);
   width: 80%;
   max-width: 60rem;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   animation: fade-slide-up 0.3s ease-out forwards;
+  overflow: hidden; /* keep it clean */
 }
 
-.modal::backdrop {
-  background-color: rgba(0, 0, 0, 0.85);
-}
-
-.modal .dialog-inner {
+.modal .modal-inner {
   padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Chrome, Edge, Safari */
+.modal .modal-inner::-webkit-scrollbar {
+  width: 8px;
+}
+.modal .modal-inner::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+.modal .modal-inner::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* For elements that fetched via API || dynamic content */

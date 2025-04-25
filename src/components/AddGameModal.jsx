@@ -6,7 +6,7 @@ import Select from './UI/Select';
 import UserActionsContext from '../store/UserActionsContext';
 import useHttp from '../hooks/useHttp';
 import GamesContext from '../store/GamesContext';
-
+import FancySelect from './UI/FancySelect';
 const platformOptions = [
   { label: 'PC', value: 'pc' },
   { label: 'XBox', value: 'xbox' },
@@ -81,6 +81,7 @@ export default function AddGameModal() {
           />
         </div>
         <Input textarea id='notes' placeholder='Notes' rows='5' />
+        <FancySelect />
 
         <div className='flex items-center justify-end gap-5'>
           <Button

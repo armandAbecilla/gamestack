@@ -8,7 +8,7 @@ export default function Input({
   if (textarea) {
     return (
       <textarea
-        className={`w-full bg-white px-2 py-1 text-xl focus:outline-0 ${className}`}
+        className={`w-full bg-white px-2 py-1 text-xl text-stone-800 focus:outline-0 ${className}`}
         name={id}
         id={id}
         {...props}
@@ -18,7 +18,7 @@ export default function Input({
 
   return (
     <input
-      className={`w-full bg-white px-2 py-1 text-xl focus:outline-0 ${className}`}
+      className={`w-full bg-white px-2 py-1 text-xl text-stone-800 focus:outline-0 ${className}`}
       id={id}
       name={id}
       {...props}

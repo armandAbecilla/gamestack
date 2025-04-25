@@ -17,7 +17,7 @@ export default function ViewGameModal() {
     <Modal
       className='m-auto max-w-[1536px]!' // set the max width
       onClose={handleClose}
-      dialogInnerClassName='p-0!' // remove the dialog inner padding
+      modalInnerClassName='p-0!' // remove the dialog inner padding
       closeOnClickOutside
       open={action === 'view' && selectedGameData}
     >

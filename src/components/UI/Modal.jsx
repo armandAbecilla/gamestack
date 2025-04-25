@@ -1,58 +1,47 @@
 import { createPortal } from 'react-dom';
-import { useRef, useEffect, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function Modal({
   children,
   open,
   onClose,
   className = '',
-  dialogInnerClassName = '',
+  modalInnerClassName = '',
   closeOnClickOutside = false,
 }) {
-  const dialog = useRef();
   const innerContainer = useRef();
-  let dialogInnerClasses = 'dialog-inner';
-
-  function handleClickOutside(event) {
-    if (
-      innerContainer.current &&
-      !innerContainer.current.contains(event.target) &&
-      event.button === 0 // only handle left clicks
-    ) {
-      onClose(); // User clicked outside the dialog
-    }
-  }
 
   useEffect(() => {
-    const modal = dialog.current; // lock-in the value to this modal
-
-    if (open) {
-      modal.showModal();
-
-      if (closeOnClickOutside) {
-        document.addEventListener('mousedown', handleClickOutside);
-      }
-    }
-
-    return () => {
-      modal.close();
-
-      if (closeOnClickOutside) {
-        document.removeEventListener('mousedown', handleClickOutside);
+    const handleClickOutside = (event) => {
+      if (
+        innerContainer.current &&
+        !innerContainer.current.contains(event.target) &&
+        event.button === 0
+      ) {
+        onClose?.();
       }
     };
-  }, [open]);
 
-  if (dialogInnerClassName !== '') {
-    dialogInnerClasses += ' ' + dialogInnerClassName;
-  }
+    if (open && closeOnClickOutside) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [open, closeOnClickOutside, onClose]);
+
+  if (!open) return null;
+
+  const dialogInnerClasses = `modal-inner ${modalInnerClassName || ''}`;
 
   return createPortal(
-    <dialog ref={dialog} className={`modal ${className}`} onClose={onClose}>
-      <div className={dialogInnerClasses} ref={innerContainer}>
-        {children}
+    <div className='modal-overlay'>
+      <div className={`modal ${className}`}>
+        <div ref={innerContainer} className={dialogInnerClasses}>
+          {children}
+        </div>
       </div>
-    </dialog>,
+    </div>,
     document.getElementById('modal'),
   );
 }

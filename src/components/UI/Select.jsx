@@ -1,7 +1,7 @@
 export default function Select({ id, options, defaultPlaceholder, ...props }) {
   return (
     <select
-      className='focus:outline-darkgreen w-full bg-white p-1 text-xl'
+      className='w-full bg-white p-1 text-xl text-stone-800 focus:outline-none'
       id={id}
       name={id}
       {...props}
