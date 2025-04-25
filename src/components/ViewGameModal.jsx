@@ -7,6 +7,7 @@ import FancySelect from './UI/FancySelect';
 import { statusOptions } from '../data/dropdowns';
 import { projectConfig } from '../config';
 import useHttp from '../hooks/useHttp';
+import editIcon from '../assets/edit.png';
 
 const requestConfig = {
   method: 'PATCH', // patch since we are updating only partially
@@ -16,7 +17,8 @@ const requestConfig = {
 };
 
 export default function ViewGameModal() {
-  const { action, hideGameDetailView } = useContext(UserActionsContext);
+  const { action, hideGameDetailView, showEditNote } =
+    useContext(UserActionsContext);
   const { selectedGameData } = useContext(GamesContext);
   const [status, setStatus] = useState();
   const { sendRequest, isLoading } = useHttp('', requestConfig);
@@ -37,6 +39,11 @@ export default function ViewGameModal() {
     setStatus(value);
   }
 
+  function handleEdit() {
+    hideGameDetailView();
+    showEditNote();
+  }
+
   return (
     <Modal
       className='m-auto max-w-[1536px]!' // set the max width
@@ -48,11 +55,6 @@ export default function ViewGameModal() {
       {selectedGameData && (
         <div className='flex flex-col'>
           <div className='relative'>
-            {/* <img
-              src={selectedGameData.details.background_image}
-              alt={selectedGameData.details.name}
-              className='aspect-square h-full max-h-[400px] min-h-[350px] object-cover'
-            /> */}
             <img
               src={selectedGameData.details.background_image}
               alt={selectedGameData.details.name}
@@ -64,11 +66,12 @@ export default function ViewGameModal() {
             /> */}
           </div>
           <div className='flex w-full flex-col gap-4 p-5'>
-            <div className='flex items-center gap-4'>
-              <h3 className='font-heading text-3xl text-white'>
+            <div className='flex flex-col gap-4 xl:flex-row xl:items-center'>
+              <h3 className='font-heading order-1 text-3xl text-white xl:order-0'>
                 {selectedGameData.details.name}
               </h3>
               <FancySelect
+                className='order-0 xl:order-1'
                 options={statusOptions}
                 defaultValue={selectedGameData.status}
                 onChange={handleStatusChange}
@@ -86,10 +89,18 @@ export default function ViewGameModal() {
             </div>
 
             <div className='mt-10'>
-              <h4 className='font-heading mb-2 text-xl text-stone-300'>
-                Your Notes:
+              <h4 className='font-heading mb-2 flex items-center text-xl text-stone-300'>
+                Your Notes
+                <img
+                  className='ml-2 aspect-square h-6 cursor-pointer'
+                  src={editIcon}
+                  alt='pencil'
+                  onClick={handleEdit}
+                />
               </h4>
-              <p className='text-stone-200'>{selectedGameData.notes}</p>
+              <p className='whitespace-pre-wrap text-stone-200'>
+                {selectedGameData.notes}
+              </p>
             </div>
           </div>
         </div>

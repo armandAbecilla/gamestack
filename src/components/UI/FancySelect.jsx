@@ -76,10 +76,7 @@ export default function FancySelect({
 
       setDropdownStyle({
         position: 'fixed',
-        top:
-          dropdownPosition === 'top'
-            ? rect.top + scrollY - 8
-            : rect.bottom + scrollY,
+        top: dropdownPosition === 'top' ? rect.top - 8 : rect.bottom,
         transform: dropdownPosition === 'top' ? 'translateY(-100%)' : 'none',
         left: rect.left + scrollX,
         width: rect.width,

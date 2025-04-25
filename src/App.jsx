@@ -4,9 +4,10 @@ import AddGameModal from './components/AddGameModal';
 import ViewGameModal from './components/ViewGameModal';
 import { GamesContextProvider } from './store/GamesContext';
 import { UserActionsContextProvider } from './store/UserActionsContext';
+import EditNotesModal from './components/EditNotesModal';
 function App() {
   return (
-    <div className='container mx-auto'>
+    <div className='container mx-auto px-5'>
       <UserActionsContextProvider>
         <GamesContextProvider>
           <Header />
@@ -15,6 +16,7 @@ function App() {
           {/* Modals here */}
           <AddGameModal />
           <ViewGameModal />
+          <EditNotesModal />
         </GamesContextProvider>
       </UserActionsContextProvider>
     </div>

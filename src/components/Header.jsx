@@ -19,7 +19,16 @@ export default function Header() {
           </h1>
         </div>
         <nav>
-          <Button onClick={handleQuickAdd}>Quick Add</Button>
+          <Button className='hidden xl:block' onClick={handleQuickAdd}>
+            Quick Add
+          </Button>
+
+          <button
+            onClick={handleQuickAdd}
+            class='bg-darkgreen hover:bg-darkgreen-100 flex h-10 w-10 items-center justify-center rounded-full text-white xl:hidden'
+          >
+            +
+          </button>
         </nav>
       </header>
     </>

@@ -10,7 +10,7 @@ const GamesContext = createContext({
   setLoadedGames: () => {},
   addGame: (gameData) => {},
   removeGame: (gameId) => {},
-  setSelectedGame: (gameId) => {},
+  setSelectedGame: (gameData) => {},
 });
 
 function gamesReducer(state, action) {

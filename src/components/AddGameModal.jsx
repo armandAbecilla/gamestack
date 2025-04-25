@@ -7,7 +7,6 @@ import Select from './UI/Select';
 import UserActionsContext from '../store/UserActionsContext';
 import useHttp from '../hooks/useHttp';
 import GamesContext from '../store/GamesContext';
-import FancySelect from './UI/FancySelect';
 
 const platformOptions = [
   { label: 'PC', value: 'pc' },
@@ -66,7 +65,7 @@ export default function AddGameModal() {
       </h2>
       <form action={addFormAction} className='flex flex-col gap-5'>
         <Input id='name' type='text' placeholder='Game Name' required />
-        <div className='flex gap-4'>
+        <div className='flex flex-col gap-4 xl:flex-row'>
           <Select
             id='platform'
             options={platformOptions}

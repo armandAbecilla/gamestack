@@ -82,7 +82,7 @@ export default function GameList() {
           <p className='text-center text-4xl'>Could not find {search}.</p>
         )}
 
-      <div className='grid grid-cols-5 gap-4'>
+      <div className='grid grid-cols-2 gap-4 xl:grid-cols-5'>
         {filteredGames.map((game) => (
           <GameCard
             key={game.id}
