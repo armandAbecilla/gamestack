@@ -81,7 +81,6 @@ export default function AddGameModal() {
           />
         </div>
         <Input textarea id='notes' placeholder='Notes' rows='5' />
-        <FancySelect />
 
         <div className='flex items-center justify-end gap-5'>
           <Button

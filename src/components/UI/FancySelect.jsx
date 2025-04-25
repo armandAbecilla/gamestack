@@ -1,103 +1,177 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const statusOptions = [
-  { label: 'Playing', value: 'playing', classNames: '' },
-  { label: 'Backlog', value: 'backlog', classNames: '' },
-  { label: 'Completed', value: 'completed', classNames: '' },
-  { label: 'Wishlist', value: 'wishlist', classNames: '' },
-];
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.1,
+      staggerDirection: -1, // Animate children bottom-to-top
+    },
+  },
+};
 
-export default function FancySelect() {
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
+
+function getOptionClassNames(options, selectOption) {
+  return (
+    options.find((opt) => opt.value === selectOption?.value).classNames || ''
+  );
+}
+
+export default function FancySelect({
+  options,
+  dropdownPosition = 'top',
+  defaultValue,
+  value,
+  onChange,
+  name,
+}) {
   const triggerRef = useRef(null);
+  const dropdownContainerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
-  const [selected, setSelected] = useState(null);
-  const [dropdownContainer, setDropdownContainer] = useState(null);
+  const [internalSelected, setInternalSelected] = useState(
+    options.find((opt) => opt.value === defaultValue) || null,
+  );
 
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const selected = value
+    ? options.find((opt) => opt.value === value)
+    : internalSelected;
 
+  function toggleDropdown() {
+    setIsOpen((prev) => !prev);
+  }
+
+  function handleSelect(opt) {
+    if (onChange) {
+      onChange(opt.value);
+    }
+    if (!value) {
+      setInternalSelected(opt); // uncontrolled mode
+    }
+    setIsOpen(false);
+  }
+
+  // update the css for selected option based on the option
+  const selectedClasess =
+    options.find((i) => i.value === selected?.value)?.classNames ||
+    options[0].classNames;
+
+  // Recalculate dropdown position
   useLayoutEffect(() => {
     if (isOpen && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const scrollX = window.scrollX;
+
       setDropdownStyle({
         position: 'fixed',
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
+        top:
+          dropdownPosition === 'top'
+            ? rect.top + scrollY - 8
+            : rect.bottom + scrollY,
+        transform: dropdownPosition === 'top' ? 'translateY(-100%)' : 'none',
+        left: rect.left + scrollX,
         width: rect.width,
-        background: 'white',
-        border: '1px solid #ccc',
-        borderRadius: 4,
-        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
         zIndex: 9999,
       });
     }
-  }, [isOpen]);
+  }, [isOpen, dropdownPosition]);
 
+  // Close on outside click
   useEffect(() => {
-    // Find the closest dialog element and append the dropdown to it
-    if (triggerRef.current) {
-      const dialog = triggerRef.current.closest('dialog');
-      if (dialog) {
-        setDropdownContainer(dialog);
-      } else {
-        setDropdownContainer(document.body); // fallback
-      }
-    }
-  }, []);
+    if (!isOpen) return;
 
-  useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!triggerRef.current?.contains(e.target)) {
+      if (
+        !triggerRef.current?.contains(e.target) &&
+        !dropdownContainerRef.current?.contains(e.target)
+      ) {
         setIsOpen(false);
       }
     };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+
+    document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const handleSelect = (opt) => {
-    setSelected(opt);
-    setIsOpen(false);
-  };
+  // Close if trigger moves or window resizes, or when user scrolls while the options are displayed
+  useEffect(() => {
+    if (!isOpen || !triggerRef.current) return;
+
+    let prevRect = triggerRef.current.getBoundingClientRect();
+
+    const checkPositionChange = () => {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const moved =
+        rect.top !== prevRect.top ||
+        rect.left !== prevRect.left ||
+        rect.width !== prevRect.width ||
+        rect.height !== prevRect.height;
+
+      if (moved) setIsOpen(false);
+    };
+
+    const interval = setInterval(checkPositionChange, 100);
+    const handleResize = () => setIsOpen(false);
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
 
   return (
     <>
       <button
         ref={triggerRef}
         onClick={toggleDropdown}
-        style={{
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: 4,
-          background: 'white',
-        }}
+        type='button'
+        className={`w-max min-w-fit cursor-pointer rounded-full border border-stone-700/50 px-5 py-1 text-left backdrop-blur-md ${selectedClasess}`}
       >
-        {selected || 'Select an option'}
+        {selected?.label || 'Please Select'}
       </button>
 
-      {isOpen &&
-        dropdownContainer &&
-        createPortal(
-          <div style={dropdownStyle}>
-            {statusOptions.map((opt) => (
-              <div
-                key={opt.value}
-                onClick={() => handleSelect(opt.value)}
-                style={{
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid #eee',
-                }}
-              >
-                {opt.label}
-              </div>
-            ))}
-          </div>,
-          dropdownContainer,
-        )}
+      {name && selected && (
+        <input type='hidden' name={name} value={selected.value} />
+      )}
+
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              id='dropdownContainer'
+              style={dropdownStyle}
+              ref={dropdownContainerRef}
+              initial='hidden'
+              animate='visible'
+              exit='hidden'
+              variants={containerVariants}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              {options.map((opt) => (
+                <motion.div
+                  key={opt.value}
+                  variants={itemVariants}
+                  onClick={() => handleSelect(opt)}
+                  className={`w-max min-w-fit cursor-pointer rounded-full px-5 py-1 text-left backdrop-blur-md not-first:mt-1 ${getOptionClassNames(options, opt)}`}
+                >
+                  {opt.label}
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }

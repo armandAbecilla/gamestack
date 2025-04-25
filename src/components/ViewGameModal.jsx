@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import Modal from '../components/UI/Modal';
-import Badge from './UI/Badge';
 import PlatformIcon from './UI/PlatformIcon';
 import UserActionsContext from '../store/UserActionsContext';
 import GamesContext from '../store/GamesContext';
+import FancySelect from './UI/FancySelect';
+import { statusOptions } from '../data/dropdowns';
 
 export default function ViewGameModal() {
   const { action, hideGameDetailView } = useContext(UserActionsContext);
@@ -11,6 +12,10 @@ export default function ViewGameModal() {
 
   function handleClose() {
     hideGameDetailView();
+  }
+
+  function handleStatusChange(value) {
+    console.log(value);
   }
 
   return (
@@ -44,7 +49,11 @@ export default function ViewGameModal() {
               <h3 className='font-heading text-3xl text-white'>
                 {selectedGameData.details.name}
               </h3>
-              <Badge status={selectedGameData.status} />
+              <FancySelect
+                options={statusOptions}
+                defaultValue={selectedGameData.status}
+                onChange={handleStatusChange}
+              />
             </div>
 
             <div className='flex flex-col'>

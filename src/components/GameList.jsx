@@ -1,7 +1,7 @@
 import GameCard from './GameCard';
 import GamesContext from '../store/GamesContext';
 import UserActionsContext from '../store/UserActionsContext';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import useDebounce from '../hooks/useDebounce';
 import SearchInput from './UI/SearchInput';
