@@ -1,3 +1,4 @@
+import { projectConfig } from '../config';
 import GameCard from './GameCard';
 import GamesContext from '../store/GamesContext';
 import UserActionsContext from '../store/UserActionsContext';
@@ -5,6 +6,8 @@ import { useContext, useEffect, useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import useDebounce from '../hooks/useDebounce';
 import SearchInput from './UI/SearchInput';
+
+const API_URL = import.meta.env.VITE_API_URL;
 const config = {};
 
 function filterBySearch(games, keyword) {
@@ -41,7 +44,7 @@ export default function GameList() {
   async function handleGameSelect(id) {
     if (isSelectedGameFetching) return;
 
-    const response = await sendRequest(`http://localhost:3000/games/${id}`);
+    const response = await sendRequest(`${projectConfig.API_URL}/games/${id}`);
     // set the data to be used by other components via GamesContext
     setSelectedGame(response.data);
     showGameDetailView();

@@ -1,3 +1,4 @@
+import { projectConfig } from '../config';
 import { useActionState, useContext } from 'react';
 import Modal from '../components/UI/Modal';
 import Button from './UI/Button';
@@ -7,6 +8,7 @@ import UserActionsContext from '../store/UserActionsContext';
 import useHttp from '../hooks/useHttp';
 import GamesContext from '../store/GamesContext';
 import FancySelect from './UI/FancySelect';
+
 const platformOptions = [
   { label: 'PC', value: 'pc' },
   { label: 'XBox', value: 'xbox' },
@@ -42,7 +44,7 @@ export default function AddGameModal() {
     const addGameData = Object.fromEntries(formData.entries());
 
     const newGameData = await sendRequest(
-      'http://localhost:3000/games/add',
+      `${projectConfig.API_URL}/games/add`,
       JSON.stringify({
         gameData: addGameData,
       }),

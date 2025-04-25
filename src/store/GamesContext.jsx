@@ -1,3 +1,4 @@
+import { projectConfig } from '../config';
 import { createContext, useEffect, useReducer, useCallback } from 'react';
 import useHttp from '../hooks/useHttp';
 
@@ -59,7 +60,7 @@ export function GamesContextProvider({ children }) {
     data: fetchedGames,
     isLoading: isGamesFetching,
     sendRequest: refetchGames,
-  } = useHttp('http://localhost:3000/games', config, []);
+  } = useHttp(`${projectConfig.API_URL}/games`, config, []);
 
   useEffect(() => {
     if (fetchedGames.length > 0) {
