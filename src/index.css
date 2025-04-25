@@ -27,7 +27,7 @@ body {
   /* background: #1d1a16; */
   color: #d9e2f1;
   min-height: 100vh;
-  background: rgba(255, 255, 255, 0.9) url('bg.png') no-repeat center / cover;
+  background: rgba(255, 255, 255, 0.9) url('/bg.png') no-repeat center / cover;
   /* background: linear-gradient(135deg, #16181c, #1a1a1a, #2c2c2c); */
   /* background-size: 400% 400%; */
   /* animation: backgroundShift 16s ease infinite; */
