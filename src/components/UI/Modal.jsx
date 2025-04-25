@@ -30,6 +30,21 @@ export default function Modal({
     }
   }, [open, closeOnClickOutside, onClose]);
 
+  // prevent the user from scrolling the body if the modal is open(ed)
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalStyle;
+    }
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const dialogInnerClasses = `modal-inner ${modalInnerClassName || ''}`;

@@ -25,7 +25,7 @@ export default function Header() {
 
           <button
             onClick={handleQuickAdd}
-            class='bg-darkgreen hover:bg-darkgreen-100 flex h-10 w-10 items-center justify-center rounded-full text-white xl:hidden'
+            className='bg-darkgreen hover:bg-darkgreen-100 flex h-10 w-10 items-center justify-center rounded-full text-white xl:hidden'
           >
             +
           </button>
