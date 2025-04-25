@@ -7,7 +7,6 @@ import useHttp from '../hooks/useHttp';
 import useDebounce from '../hooks/useDebounce';
 import SearchInput from './UI/SearchInput';
 
-const API_URL = import.meta.env.VITE_API_URL;
 const config = {};
 
 function filterBySearch(games, keyword) {

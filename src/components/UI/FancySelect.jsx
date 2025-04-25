@@ -32,6 +32,7 @@ export default function FancySelect({
   value,
   onChange,
   name,
+  disabled,
 }) {
   const triggerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
@@ -48,6 +49,7 @@ export default function FancySelect({
   const selectedClasess =
     options.find((i) => i.value === selected)?.classNames ||
     options[0].classNames;
+  const disabledClasses = disabled ? 'pointer-events-none' : '';
   // filter options to exclude selected value from the options
   const filteredOptions = [...options].filter((opt) => opt.value !== selected);
 
@@ -137,7 +139,7 @@ export default function FancySelect({
         ref={triggerRef}
         onClick={toggleDropdown}
         type='button'
-        className={`w-max min-w-fit cursor-pointer rounded-full border border-stone-700/50 px-5 py-1 text-left backdrop-blur-md ${selectedClasess}`}
+        className={`w-max min-w-fit cursor-pointer rounded-full border border-stone-700/50 px-5 py-1 text-left backdrop-blur-md ${selectedClasess} ${disabledClasses}`}
       >
         {selectedLabel || 'Please Select'}
       </button>

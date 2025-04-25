@@ -1,21 +1,40 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Modal from '../components/UI/Modal';
 import PlatformIcon from './UI/PlatformIcon';
 import UserActionsContext from '../store/UserActionsContext';
 import GamesContext from '../store/GamesContext';
 import FancySelect from './UI/FancySelect';
 import { statusOptions } from '../data/dropdowns';
+import { projectConfig } from '../config';
+import useHttp from '../hooks/useHttp';
+
+const requestConfig = {
+  method: 'PATCH', // patch since we are updating only partially
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 export default function ViewGameModal() {
   const { action, hideGameDetailView } = useContext(UserActionsContext);
   const { selectedGameData } = useContext(GamesContext);
+  const [status, setStatus] = useState();
+  const { sendRequest, isLoading } = useHttp('', requestConfig);
 
   function handleClose() {
     hideGameDetailView();
   }
 
-  function handleStatusChange(value) {
-    console.log(value);
+  async function handleStatusChange(value) {
+    const id = selectedGameData.id;
+    const updatedData = JSON.stringify({
+      ...selectedGameData,
+      status: value,
+    });
+
+    await sendRequest(`${projectConfig.API_URL}/games/${id}`, updatedData);
+
+    setStatus(value);
   }
 
   return (
@@ -53,6 +72,7 @@ export default function ViewGameModal() {
                 options={statusOptions}
                 defaultValue={selectedGameData.status}
                 onChange={handleStatusChange}
+                value={status}
               />
             </div>
 
