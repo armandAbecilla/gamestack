@@ -38,31 +38,32 @@ export default function FancySelect({
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
   const [internalSelected, setInternalSelected] = useState(
-    options.find((opt) => opt.value === defaultValue) || null,
+    defaultValue || null,
   );
 
-  const selected = value
-    ? options.find((opt) => opt.value === value)
-    : internalSelected;
+  const selected = value ? value : internalSelected; // gamit na gamit to sa conditions natin later
+  const selectedLabel = options.find((opt) => opt.value === selected)?.label; // for displaying label for the button
+  const isControlled = value !== undefined; // whether if this was used as control value (using onChange ) or not
+  // derive css styles for selected based on the selected value
+  const selectedClasess =
+    options.find((i) => i.value === selected)?.classNames ||
+    options[0].classNames;
+  // filter options to exclude selected value from the options
+  const filteredOptions = [...options].filter((opt) => opt.value !== selected);
 
   function toggleDropdown() {
     setIsOpen((prev) => !prev);
   }
 
-  function handleSelect(opt) {
+  function handleSelect(selectedValue) {
     if (onChange) {
-      onChange(opt.value);
+      onChange(selectedValue);
     }
-    if (!value) {
-      setInternalSelected(opt); // uncontrolled mode
+    if (!isControlled) {
+      setInternalSelected(selectedValue);
     }
     setIsOpen(false);
   }
-
-  // update the css for selected option based on the option
-  const selectedClasess =
-    options.find((i) => i.value === selected?.value)?.classNames ||
-    options[0].classNames;
 
   // Recalculate dropdown position
   useLayoutEffect(() => {
@@ -116,13 +117,14 @@ export default function FancySelect({
         rect.width !== prevRect.width ||
         rect.height !== prevRect.height;
 
-      if (moved) setIsOpen(false);
+      if (moved) setIsOpen(false); // close the select kapag hindi na sila matched
     };
 
     const interval = setInterval(checkPositionChange, 100);
     const handleResize = () => setIsOpen(false);
 
     window.addEventListener('resize', handleResize);
+
     return () => {
       clearInterval(interval);
       window.removeEventListener('resize', handleResize);
@@ -137,7 +139,7 @@ export default function FancySelect({
         type='button'
         className={`w-max min-w-fit cursor-pointer rounded-full border border-stone-700/50 px-5 py-1 text-left backdrop-blur-md ${selectedClasess}`}
       >
-        {selected?.label || 'Please Select'}
+        {selectedLabel || 'Please Select'}
       </button>
 
       {name && selected && (
@@ -157,11 +159,11 @@ export default function FancySelect({
               variants={containerVariants}
               onMouseDown={(e) => e.stopPropagation()}
             >
-              {options.map((opt) => (
+              {filteredOptions.map((opt) => (
                 <motion.div
                   key={opt.value}
                   variants={itemVariants}
-                  onClick={() => handleSelect(opt)}
+                  onClick={() => handleSelect(opt.value)}
                   className={`w-max min-w-fit cursor-pointer rounded-full px-5 py-1 text-left backdrop-blur-md not-first:mt-1 ${getOptionClassNames(options, opt)}`}
                 >
                   {opt.label}
