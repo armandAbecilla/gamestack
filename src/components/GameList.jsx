@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import useDebounce from '../hooks/useDebounce';
 import SearchInput from './UI/SearchInput';
+import Stats from './Stats';
 
 const config = {};
 
@@ -75,6 +76,8 @@ export default function GameList() {
         />
       </div>
 
+      <Stats />
+
       {/* make sure to display only when currentSearchInput value matches the debounceSearchInput  */}
       {debouncedSearchTerm === search &&
         filteredGames.length === 0 &&
@@ -82,7 +85,7 @@ export default function GameList() {
           <p className='text-center text-4xl'>Could not find {search}.</p>
         )}
 
-      <div className='grid grid-cols-2 gap-4 xl:grid-cols-5'>
+      <div className='mt-8 grid grid-cols-2 gap-4 xl:grid-cols-5'>
         {filteredGames.map((game) => (
           <GameCard
             key={game.id}
