@@ -2,7 +2,7 @@ import ShuffleCounter from './UI/ShuffleCounter';
 import { useSelector } from 'react-redux';
 
 export default function Stats() {
-  const games = useSelector((state) => state.games.games);
+  const games = useSelector((state) => state.games.games.data);
   const playingCount = games.filter((game) => game.status === 'playing').length;
   const completedCount = games.filter(
     (game) => game.status === 'completed',

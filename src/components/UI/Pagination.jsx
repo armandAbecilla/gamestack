@@ -1,48 +1,20 @@
-import { useState } from 'react';
-import { Children } from 'react';
+import { useState, Children, useCallback } from 'react';
 
 export default function Pagination({
-  onFirstPage,
-  onPreviousPage,
-  onNextPage,
-  onLastPage,
+  currentPage = 1,
+  onSetPage,
+  pageSize = 10, // max no of items to display per page
+  totalCount = 0,
   paginatingItemsClassNames,
-  pageSize = 10,
   children,
-  isDataFromServer = false,
   maxButtonItemDisplay = 5,
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalItems = Children.count(children);
+  const totalItems = totalCount;
   const totalPages = Math.ceil(totalItems / pageSize);
-
-  let paginatedItems = null;
-  if (isDataFromServer) {
-    paginatedItems = children;
-  } else {
-    paginatedItems = Children.toArray(children).slice(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize,
-    );
-  }
+  const paginatedItems = children;
 
   function handleSetPage(page) {
-    setCurrentPage(page);
-  }
-
-  function handleNextPage() {
-    if (!isLastPage) {
-      setCurrentPage((currentPage) => currentPage + 1);
-      onNextPage();
-    }
-  }
-
-  function handlePrevPage() {
-    if (!isFirstPage) {
-      setCurrentPage((currentPage) => currentPage - 1);
-      onPreviousPage();
-    }
+    onSetPage(page);
   }
 
   const isFirstPage = currentPage === 1;
@@ -67,7 +39,7 @@ export default function Pagination({
           </li> */}
           <li>
             <button
-              onClick={handlePrevPage}
+              onClick={() => handleSetPage(currentPage - 1)}
               className={`${paginationButtonClasses} ${isFirstPage && disabledClasses}`}
             >
               &lt; Prev
@@ -76,7 +48,7 @@ export default function Pagination({
           {Array.from({ length: totalPages }, (_, idx) => (
             <li key={idx}>
               <button
-                className={paginationButtonClasses}
+                className={`${paginationButtonClasses} ${currentPage === idx + 1 && disabledClasses}`}
                 onClick={() => handleSetPage(idx + 1)}
               >
                 {idx + 1}
@@ -85,7 +57,7 @@ export default function Pagination({
           ))}
           <li>
             <button
-              onClick={handleNextPage}
+              onClick={() => handleSetPage(currentPage + 1)}
               className={`${paginationButtonClasses} ${isLastPage && disabledClasses}`}
               disabled={isLastPage}
             >

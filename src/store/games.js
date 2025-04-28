@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  games: [],
+  games: {
+    count: 0,
+    data: [],
+  },
   selectedGameData: null,
 };
 
