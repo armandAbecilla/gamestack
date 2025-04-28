@@ -1,14 +1,23 @@
-import { projectConfig } from '../config';
+import { projectConfig } from '../config'; // environment variable
+
+// components
 import GameCard from './GameCard';
-import GamesContext from '../store/GamesContext';
-import UserActionsContext from '../store/UserActionsContext';
-import { useContext, useEffect, useState } from 'react';
+import Stats from './Stats';
+import SearchInput from './UI/SearchInput';
+
+// react hooks
+import { useEffect, useState } from 'react';
+
+// custom hooks
 import useHttp from '../hooks/useHttp';
 import useDebounce from '../hooks/useDebounce';
-import SearchInput from './UI/SearchInput';
-import Stats from './Stats';
 
-const config = {};
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { gamesActions } from '../store/games';
+import { userActions } from '../store/user-actions';
+
+const config = {}; // useHttp config
 
 function filterBySearch(games, keyword) {
   if (!games) return;
@@ -22,15 +31,35 @@ function filterBySearch(games, keyword) {
 }
 
 export default function GameList() {
-  const { games, isGamesFetching, setSelectedGame, setLoadedGames } =
-    useContext(GamesContext);
-  const { showGameDetailView } = useContext(UserActionsContext);
+  const userGames = useSelector((state) => state.games.games);
+  const dispatch = useDispatch();
+  const [search, setSearch] = useState('');
+  const debouncedSearchTerm = useDebounce(search, 1000);
+
+  // User Games
+  const { data: loadedUserGames, isLoading: isUserGamesLoading } = useHttp(
+    `${projectConfig.API_URL}/games`,
+    config,
+  );
+
+  // Selected Game
   const { isLoading: isSelectedGameFetching, sendRequest } = useHttp(
     '',
     config,
   ); // url will be supplied later via function
-  const [search, setSearch] = useState('');
-  const debouncedSearchTerm = useDebounce(search, 1000);
+
+  useEffect(() => {
+    if (loadedUserGames) {
+      dispatch(gamesActions.setLoadedGames(loadedUserGames));
+    }
+  }, [loadedUserGames, dispatch]);
+
+  // for debouncing the search input
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setSearch(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
 
   function handleSearchChange(e) {
     const value = e.target.value;
@@ -45,24 +74,17 @@ export default function GameList() {
     if (isSelectedGameFetching) return;
 
     const response = await sendRequest(`${projectConfig.API_URL}/games/${id}`);
-    // set the data to be used by other components via GamesContext
-    setSelectedGame(response.data);
-    showGameDetailView();
+    dispatch(gamesActions.setSelectedGame(response.data));
+    dispatch(userActions.showGameDetailView());
   }
 
-  // for debouncing the search input
-  useEffect(() => {
-    if (debouncedSearchTerm) {
-      setSearch(debouncedSearchTerm);
-    }
-  }, [debouncedSearchTerm]);
-
-  if (isGamesFetching) {
+  if (isUserGamesLoading) {
     return <p className='text-center text-4xl'>Getting your games...</p>;
   }
 
   // derive the filteredGames, might change if we decide to filter via http response
-  const filteredGames = filterBySearch(games, debouncedSearchTerm) || games;
+  const filteredGames =
+    filterBySearch(userGames, debouncedSearchTerm) || userGames;
 
   return (
     <div>

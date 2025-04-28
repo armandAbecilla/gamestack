@@ -1,9 +1,8 @@
-import { useContext } from 'react';
 import ShuffleCounter from './UI/ShuffleCounter';
-import GamesContext from '../store/GamesContext';
+import { useSelector } from 'react-redux';
 
 export default function Stats() {
-  const { games } = useContext(GamesContext);
+  const games = useSelector((state) => state.games.games);
   const playingCount = games.filter((game) => game.status === 'playing').length;
   const completedCount = games.filter(
     (game) => game.status === 'completed',

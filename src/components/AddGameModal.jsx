@@ -1,12 +1,21 @@
 import { projectConfig } from '../config';
-import { useActionState, useContext } from 'react';
+
+// components
 import Modal from '../components/UI/Modal';
 import Button from './UI/Button';
 import Input from './UI/Input';
 import Select from './UI/Select';
-import UserActionsContext from '../store/UserActionsContext';
+
+// react hooks
+import { useActionState } from 'react';
+
+// custom hooks
 import useHttp from '../hooks/useHttp';
-import GamesContext from '../store/GamesContext';
+
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { gamesActions } from '../store/games';
+import { userActions } from '../store/user-actions';
 
 const platformOptions = [
   { label: 'PC', value: 'pc' },
@@ -30,13 +39,13 @@ const requestConfig = {
 };
 
 export default function AddGameModal() {
-  const { action, hideAdd } = useContext(UserActionsContext);
+  const userAction = useSelector((state) => state.userActions.action);
   const { sendRequest } = useHttp('', requestConfig, {});
   const [state, addFormAction, isFormSubmitting] = useActionState(addAction);
-  const { refetchGames, addGame, games } = useContext(GamesContext);
+  const dispatch = useDispatch();
 
   function handleClose() {
-    hideAdd();
+    dispatch(userActions.resetAction());
   }
 
   async function addAction(prevForm, formData) {
@@ -52,14 +61,14 @@ export default function AddGameModal() {
     // refetchGames(); // if we want the re-fetch approach
 
     if (newGameData?.data) {
-      addGame(newGameData.data); // optimistic update
+      dispatch(gamesActions.addItem(newGameData.data)); // optimistic update
     }
 
     handleClose();
   }
 
   return (
-    <Modal className='m-auto' open={action === 'add'} onClose={handleClose}>
+    <Modal className='m-auto' open={userAction === 'add'} onClose={handleClose}>
       <h2 className='text-darkgreen font-heading mb-4 text-3xl font-bold'>
         Add a new Game
       </h2>

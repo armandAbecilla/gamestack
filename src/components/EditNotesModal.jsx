@@ -1,11 +1,20 @@
-import { useActionState, useContext, useEffect, useState } from 'react';
-import GamesContext from '../store/GamesContext';
+import { projectConfig } from '../config';
+
+// components
 import Modal from './UI/Modal';
 import Input from './UI/Input';
 import Button from './UI/Button';
-import UserActionsContext from '../store/UserActionsContext';
+
+// react hooks
+import { useActionState, useEffect, useState } from 'react';
+
+// custom hooks
 import useHttp from '../hooks/useHttp';
-import { projectConfig } from '../config';
+
+// redux
+import { gamesActions } from '../store/games';
+import { useDispatch, useSelector } from 'react-redux';
+import { userActions } from '../store/user-actions';
 
 const requestConfig = {
   method: 'PATCH', // patch since we are updating only partially
@@ -15,14 +24,13 @@ const requestConfig = {
 };
 
 export default function EditNotesModal() {
-  const { action, hideEditNote, showGameDetailView } =
-    useContext(UserActionsContext);
-
-  const { selectedGameData, setSelectedGame } = useContext(GamesContext);
+  const selectedGameData = useSelector((state) => state.games.selectedGameData);
+  const userAction = useSelector((state) => state.userActions.action);
   const [notes, setNotes] = useState('');
   const { sendRequest } = useHttp('', requestConfig);
   const [state, editNoteFormAction, isFormSubmitting] =
     useActionState(editNoteAction);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (selectedGameData) {
@@ -47,7 +55,7 @@ export default function EditNotesModal() {
     );
 
     // update the current data
-    setSelectedGame(updatedGameData);
+    dispatch(gamesActions.setSelectedGame(updatedGameData));
     handleClose();
   }
 
@@ -56,15 +64,15 @@ export default function EditNotesModal() {
   }
 
   function handleClose() {
-    hideEditNote();
-    showGameDetailView();
+    dispatch(userActions.resetAction()); // close the modal first
+    dispatch(userActions.showGameDetailView());
   }
 
   return (
     <Modal
       className='m-auto max-w-lg' // set the max width
       onClose={handleClose}
-      open={action === 'editNote' && selectedGameData}
+      open={userAction === 'editNote' && selectedGameData}
     >
       <h4 className='font-heading mb-4 flex items-center text-xl text-stone-300'>
         Update Notes

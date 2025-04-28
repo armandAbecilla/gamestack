@@ -1,13 +1,23 @@
-import { useContext, useState } from 'react';
+import { projectConfig } from '../config'; // environment variable
+
+// components
 import Modal from '../components/UI/Modal';
 import PlatformIcon from './UI/PlatformIcon';
-import UserActionsContext from '../store/UserActionsContext';
-import GamesContext from '../store/GamesContext';
 import FancySelect from './UI/FancySelect';
-import { statusOptions } from '../data/dropdowns';
-import { projectConfig } from '../config';
+
+// react hooks
+import { useState } from 'react';
+
+// custom hooks
 import useHttp from '../hooks/useHttp';
+
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { userActions } from '../store/user-actions';
+
+// assets and static data
 import editIcon from '../assets/edit.png';
+import { statusOptions } from '../data/dropdowns';
 
 const requestConfig = {
   method: 'PATCH', // patch since we are updating only partially
@@ -17,14 +27,14 @@ const requestConfig = {
 };
 
 export default function ViewGameModal() {
-  const { action, hideGameDetailView, showEditNote } =
-    useContext(UserActionsContext);
-  const { selectedGameData } = useContext(GamesContext);
+  const selectedGameData = useSelector((state) => state.games.selectedGameData);
+  const userAction = useSelector((state) => state.userActions.action);
   const [status, setStatus] = useState();
-  const { sendRequest, isLoading } = useHttp('', requestConfig);
+  const { sendRequest } = useHttp('', requestConfig);
+  const dispatch = useDispatch();
 
   function handleClose() {
-    hideGameDetailView();
+    dispatch(userActions.resetAction());
   }
 
   async function handleStatusChange(value) {
@@ -40,8 +50,9 @@ export default function ViewGameModal() {
   }
 
   function handleEdit() {
-    hideGameDetailView();
-    showEditNote();
+    dispatch(userActions.resetAction());
+
+    dispatch(userActions.showEditNote());
   }
 
   return (
@@ -50,7 +61,7 @@ export default function ViewGameModal() {
       onClose={handleClose}
       modalInnerClassName='p-0!' // remove the dialog inner padding
       closeOnClickOutside
-      open={action === 'view' && selectedGameData}
+      open={userAction === 'view' && selectedGameData}
     >
       {selectedGameData && (
         <div className='flex flex-col'>

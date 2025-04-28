@@ -1,12 +1,16 @@
-import { useContext } from 'react';
-import logoImg from '../assets/gamestack-logo.png';
+// components
 import Button from './UI/Button';
-import UserActionsContext from '../store/UserActionsContext';
+
+// redux
+import { useDispatch } from 'react-redux';
+import { userActions } from '../store/user-actions';
+
+import logoImg from '../assets/gamestack-logo.png';
 export default function Header() {
-  const { showAdd } = useContext(UserActionsContext);
+  const dispatch = useDispatch();
 
   function handleQuickAdd() {
-    showAdd();
+    dispatch(userActions.showAdd());
   }
 
   return (
