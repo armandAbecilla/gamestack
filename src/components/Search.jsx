@@ -21,7 +21,7 @@ export default function Search() {
   const [search, setSearch] = useState('');
   const { count: searchCount } = useSelector((state) => state.games.games);
   const debouncedSearchTerm = useDebounce(search, 1000);
-  const { sendRequest } = useHttp('', config);
+  const { sendRequest, isLoading } = useHttp('', config);
   const dispatch = useDispatch();
 
   // for debouncing the search input
@@ -52,9 +52,12 @@ export default function Search() {
   return (
     <>
       {/* make sure to display only when currentSearchInput value matches the debounceSearchInput  */}
-      {debouncedSearchTerm === search && search !== '' && searchCount === 0 && (
-        <p className='mb-4 text-center text-3xl'>Could not find {search}.</p>
-      )}
+      {debouncedSearchTerm === search &&
+        search !== '' &&
+        searchCount === 0 &&
+        !isLoading && (
+          <p className='mb-4 text-center text-3xl'>Could not find {search}.</p>
+        )}
 
       <div className='bg-darkgreen/10 p- mb-5 rounded-full border border-white/15 p-3 shadow-2xl backdrop-blur-md'>
         <SearchInput
