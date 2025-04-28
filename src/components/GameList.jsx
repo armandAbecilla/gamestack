@@ -4,6 +4,7 @@ import { projectConfig } from '../config'; // environment variable
 import GameCard from './GameCard';
 import Stats from './Stats';
 import SearchInput from './UI/SearchInput';
+import Pagination from './UI/Pagination';
 
 // react hooks
 import { useEffect, useState } from 'react';
@@ -107,7 +108,14 @@ export default function GameList() {
           <p className='text-center text-4xl'>Could not find {search}.</p>
         )}
 
-      <div className='mt-8 grid grid-cols-2 gap-4 xl:grid-cols-5'>
+      {/* <div className='mt-8 grid grid-cols-2 gap-4 xl:grid-cols-5'>
+       
+      </div> */}
+
+      <Pagination
+        pageSize={25}
+        paginatingItemsClassNames='mt-8 grid grid-cols-2 gap-4 xl:grid-cols-5'
+      >
         {filteredGames.map((game) => (
           <GameCard
             key={game.id}
@@ -116,7 +124,7 @@ export default function GameList() {
             onGameSelect={() => handleGameSelect(game.id)}
           />
         ))}
-      </div>
+      </Pagination>
     </div>
   );
 }
