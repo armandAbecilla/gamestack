@@ -14,7 +14,7 @@ import useHttp from '../hooks/useHttp';
 // redux
 import { gamesActions } from '../store/games';
 import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../store/user-actions';
+import { userActions } from '../store/userActions';
 
 const requestConfig = {
   method: 'PATCH', // patch since we are updating only partially

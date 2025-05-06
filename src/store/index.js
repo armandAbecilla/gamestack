@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import gamesReducer from './games';
-import userActionsReducer from './user-actions';
+import userActionsReducer from './userActions';
 
 const store = configureStore({
   reducer: {

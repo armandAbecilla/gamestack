@@ -3,7 +3,7 @@ import Button from './UI/Button';
 
 // redux
 import { useDispatch } from 'react-redux';
-import { userActions } from '../store/user-actions';
+import { userActions } from '../store/userActions';
 
 import logoImg from '../assets/gamestack-logo.png';
 export default function Header() {

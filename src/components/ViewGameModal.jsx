@@ -13,7 +13,7 @@ import useHttp from '../hooks/useHttp';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../store/user-actions';
+import { userActions } from '../store/userActions';
 
 // assets and static data
 import editIcon from '../assets/edit.png';

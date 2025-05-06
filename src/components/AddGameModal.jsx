@@ -15,7 +15,7 @@ import useHttp from '../hooks/useHttp';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { gamesActions } from '../store/games';
-import { userActions } from '../store/user-actions';
+import { userActions } from '../store/userActions';
 
 const platformOptions = [
   { label: 'PC', value: 'pc' },
