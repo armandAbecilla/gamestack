@@ -27,9 +27,10 @@ export default function Pagination({
     <>
       <div className={paginatingItemsClassNames}>{paginatedItems}</div>
 
-      <div className='mt-6 flex'>
-        <ul className='mx-auto flex justify-center gap-2 rounded-full border border-stone-500 bg-stone-100/5 px-4 shadow backdrop-blur-md'>
-          {/* <li>
+      {totalItems > pageSize && (
+        <div className='mt-6 flex'>
+          <ul className='mx-auto flex justify-center gap-2 rounded-full border border-stone-500 bg-stone-100/5 px-4 shadow backdrop-blur-md'>
+            {/* <li>
             <button
               onClick={() => setCurrentPage(1)}
               className={`${paginationButtonClasses} ${isFirstPage && disabledClasses}`}
@@ -37,34 +38,34 @@ export default function Pagination({
               First
             </button>
           </li> */}
-          <li>
-            <button
-              onClick={() => handleSetPage(currentPage - 1)}
-              className={`${paginationButtonClasses} ${isFirstPage && disabledClasses}`}
-            >
-              &lt; Prev
-            </button>
-          </li>
-          {Array.from({ length: totalPages }, (_, idx) => (
-            <li key={idx}>
+            <li>
               <button
-                className={`${paginationButtonClasses} ${currentPage === idx + 1 && disabledClasses}`}
-                onClick={() => handleSetPage(idx + 1)}
+                onClick={() => handleSetPage(currentPage - 1)}
+                className={`${paginationButtonClasses} ${isFirstPage && disabledClasses}`}
               >
-                {idx + 1}
+                &lt; Prev
               </button>
             </li>
-          ))}
-          <li>
-            <button
-              onClick={() => handleSetPage(currentPage + 1)}
-              className={`${paginationButtonClasses} ${isLastPage && disabledClasses}`}
-              disabled={isLastPage}
-            >
-              Next &gt;
-            </button>
-          </li>
-          {/* <li>
+            {Array.from({ length: totalPages }, (_, idx) => (
+              <li key={idx}>
+                <button
+                  className={`${paginationButtonClasses} ${currentPage === idx + 1 && disabledClasses}`}
+                  onClick={() => handleSetPage(idx + 1)}
+                >
+                  {idx + 1}
+                </button>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={() => handleSetPage(currentPage + 1)}
+                className={`${paginationButtonClasses} ${isLastPage && disabledClasses}`}
+                disabled={isLastPage}
+              >
+                Next &gt;
+              </button>
+            </li>
+            {/* <li>
             <button
               onClick={() => setCurrentPage(totalPages)}
               className={`${paginationButtonClasses} ${isLastPage && disabledClasses}`}
@@ -73,8 +74,9 @@ export default function Pagination({
               Last
             </button>
           </li> */}
-        </ul>
-      </div>
+          </ul>
+        </div>
+      )}
     </>
   );
 }
