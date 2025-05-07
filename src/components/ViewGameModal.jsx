@@ -1,5 +1,3 @@
-import { projectConfig } from '../config'; // environment variable
-
 // components
 import Modal from '../components/UI/Modal';
 import PlatformIcon from './UI/PlatformIcon';
@@ -7,9 +5,6 @@ import FancySelect from './UI/FancySelect';
 
 // react hooks
 import { useState } from 'react';
-
-// custom hooks
-import useHttp from '../hooks/useHttp';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,18 +14,12 @@ import { userActions } from '../store/userActions';
 import editIcon from '../assets/edit.png';
 import { statusOptions } from '../data/dropdowns';
 
-const requestConfig = {
-  method: 'PATCH', // patch since we are updating only partially
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+import { updateUserGameData } from '../store/games-actions';
 
 export default function ViewGameModal() {
   const selectedGameData = useSelector((state) => state.games.selectedGameData);
   const userAction = useSelector((state) => state.userActions.action);
   const [status, setStatus] = useState();
-  const { sendRequest } = useHttp('', requestConfig);
   const dispatch = useDispatch();
 
   function handleClose() {
@@ -39,12 +28,17 @@ export default function ViewGameModal() {
 
   async function handleStatusChange(value) {
     const id = selectedGameData.id;
-    const updatedData = JSON.stringify({
+    const updatedData = {
       ...selectedGameData,
       status: value,
-    });
+    };
 
-    await sendRequest(`${projectConfig.API_URL}/games/${id}`, updatedData);
+    dispatch(
+      updateUserGameData({
+        id: id,
+        gameData: updatedData,
+      }),
+    );
 
     setStatus(value);
   }

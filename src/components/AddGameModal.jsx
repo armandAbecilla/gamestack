@@ -1,5 +1,3 @@
-import { projectConfig } from '../config';
-
 // components
 import Modal from '../components/UI/Modal';
 import Button from './UI/Button';
@@ -9,13 +7,11 @@ import Select from './UI/Select';
 // react hooks
 import { useActionState } from 'react';
 
-// custom hooks
-import useHttp from '../hooks/useHttp';
-
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { gamesActions } from '../store/games';
 import { userActions } from '../store/userActions';
+import { addGame } from '../store/games-actions';
 
 const platformOptions = [
   { label: 'PC', value: 'pc' },
@@ -31,16 +27,8 @@ const statusOptions = [
   { label: 'Wishlist', value: 'wishlist' },
 ];
 
-const requestConfig = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
-
 export default function AddGameModal() {
   const userAction = useSelector((state) => state.userActions.action);
-  const { sendRequest } = useHttp('', requestConfig, {});
   const [state, addFormAction, isFormSubmitting] = useActionState(addAction);
   const dispatch = useDispatch();
 
@@ -50,18 +38,11 @@ export default function AddGameModal() {
 
   async function addAction(prevForm, formData) {
     const addGameData = Object.fromEntries(formData.entries());
+    const response = await dispatch(addGame(addGameData));
+    const { data: newGameData } = response.payload;
 
-    const newGameData = await sendRequest(
-      `${projectConfig.API_URL}/games/add`,
-      JSON.stringify({
-        gameData: addGameData,
-      }),
-    );
-
-    // refetchGames(); // if we want the re-fetch approach
-
-    if (newGameData?.data) {
-      dispatch(gamesActions.addItem(newGameData.data)); // optimistic update
+    if (newGameData) {
+      dispatch(gamesActions.addItem(newGameData)); // optimistic update
     }
 
     handleClose();

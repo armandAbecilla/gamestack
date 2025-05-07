@@ -1,5 +1,3 @@
-import { projectConfig } from '../config';
-
 // components
 import Modal from './UI/Modal';
 import Input from './UI/Input';
@@ -8,26 +6,17 @@ import Button from './UI/Button';
 // react hooks
 import { useActionState, useEffect, useState } from 'react';
 
-// custom hooks
-import useHttp from '../hooks/useHttp';
-
 // redux
 import { gamesActions } from '../store/games';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../store/userActions';
 
-const requestConfig = {
-  method: 'PATCH', // patch since we are updating only partially
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+import { updateUserGameData } from '../store/games-actions';
 
 export default function EditNotesModal() {
   const selectedGameData = useSelector((state) => state.games.selectedGameData);
   const userAction = useSelector((state) => state.userActions.action);
   const [notes, setNotes] = useState('');
-  const { sendRequest } = useHttp('', requestConfig);
   const [state, editNoteFormAction, isFormSubmitting] =
     useActionState(editNoteAction);
   const dispatch = useDispatch();
@@ -49,9 +38,11 @@ export default function EditNotesModal() {
       notes: updateNote,
     };
 
-    await sendRequest(
-      `${projectConfig.API_URL}/games/${selectedGameData.id}`,
-      JSON.stringify(updatedGameData),
+    dispatch(
+      updateUserGameData({
+        id: selectedGameData.id,
+        gameData: updatedGameData,
+      }),
     );
 
     // update the current data

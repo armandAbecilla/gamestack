@@ -2,7 +2,7 @@
 import SearchInput from './UI/SearchInput';
 
 // react hooks
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // custom hooks
 import useDebounce from '../hooks/useDebounce';
@@ -18,9 +18,15 @@ export default function Search() {
   const searchCount = useSelector((state) => state.games.totalGames);
   const isLoading = useSelector((state) => state.games.isLoading);
   const dispatch = useDispatch();
+  const isInitialLoad = useRef(true);
 
   // for debouncing the search input
   useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+
     dispatch(
       fetchUserGames({
         keyword: debouncedSearchTerm,

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserGames, fetchSelectedGame } from './games-actions';
+import { fetchUserGames, fetchSelectedGame, addGame } from './games-actions';
 
 const initialState = {
   games: [],
@@ -7,7 +7,19 @@ const initialState = {
   totalGames: 0,
   selectedGameData: null,
   isSelectedGameFetching: false,
+  isAddGameLoading: false,
 };
+
+// Utility function to handle pending/rejected state
+// const setLoadingState = (key, value) => (state) => {
+//   state[key] = value;
+// };
+
+function setLoadingState(key, value) {
+  return function (state) {
+    state[key] = value;
+  };
+}
 
 const gamesSlice = createSlice({
   name: 'games',
@@ -27,28 +39,32 @@ const gamesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch User Games
-      .addCase(fetchUserGames.pending, (state) => {
-        state.isLoading = true;
-      })
+      .addCase(fetchUserGames.pending, setLoadingState('isLoading', true))
       .addCase(fetchUserGames.fulfilled, (state, action) => {
         state.isLoading = false;
         state.games = action.payload.data;
         state.totalGames = action.payload.count;
       })
-      .addCase(fetchUserGames.rejected, (state) => {
-        state.isLoading = false;
-      })
+      .addCase(fetchUserGames.rejected, setLoadingState('isLoading', false))
       // Fetch Selected game
-      .addCase(fetchSelectedGame.pending, (state) => {
-        state.isSelectedGameFetching = true;
-      })
+      .addCase(
+        fetchSelectedGame.pending,
+        setLoadingState('isSelectedGameFetching', true),
+      )
       .addCase(fetchSelectedGame.fulfilled, (state, action) => {
         state.isSelectedGameFetching = false;
         state.selectedGameData = action.payload.data;
       })
-      .addCase(fetchSelectedGame.rejected, (state) => {
-        state.isSelectedGameFetching = false;
-      });
+      .addCase(
+        fetchSelectedGame.rejected,
+        setLoadingState('isSelectedGameFetching', false),
+      )
+      // Add new game
+      .addCase(addGame.pending, setLoadingState('isAddGameLoading', true))
+      .addCase(addGame.fulfilled, (state) => {
+        state.isAddGameLoading = false;
+      })
+      .addCase(addGame.rejected, setLoadingState('isAddGameLoading', false));
   },
 });
 
