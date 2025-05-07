@@ -56,7 +56,7 @@ export default function GameList() {
     <div>
       <Pagination
         pageSize={MAX_PAGE_SIZE}
-        paginatingItemsClassNames='mt-8 grid grid-cols-2 gap-4 xl:grid-cols-5'
+        paginatingItemsClassNames='grid grid-cols-2 gap-4 xl:grid-cols-5'
         currentPage={page}
         isDataFromServer={true}
         totalCount={totalGameCount}
