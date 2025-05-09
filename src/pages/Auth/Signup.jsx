@@ -1,7 +1,8 @@
 import SignupForm from '../../components/auth/SignupForm';
-export default function Signup() {
+
+export default function SignupPage() {
   return (
-    <div className='mx-auto w-1/2'>
+    <div className='mx-auto w-1/3'>
       <SignupForm />
     </div>
   );
