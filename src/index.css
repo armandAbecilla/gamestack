@@ -27,10 +27,11 @@ body {
   /* background: #1d1a16; */
   color: #d9e2f1;
   min-height: 100vh;
-  background: rgba(255, 255, 255, 0.9) url('/bg.png') no-repeat center / cover;
-  background: linear-gradient(135deg, #16181c, #1a1a1a, #2c2c2c);
-  background-size: 400% 400%;
-  animation: backgroundShift 10s ease infinite;
+  /* background: rgba(255, 255, 255, 0.9) url('/bg.png') no-repeat center / cover; */
+  /* background: linear-gradient(135deg, #16181c, #1a1a1a, #2c2c2c); */
+  background: #1b1b1b;
+  /* background-size: 400% 400%;
+  animation: backgroundShift 10s ease infinite; */
 }
 
 /* body:before {
@@ -123,4 +124,9 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+.glass-black {
+  background: rgba(255, 255, 255, 0.05) !important; /* frosted look */
+  backdrop-filter: blur(16px) !important; /* <--- frosted effect */
 }

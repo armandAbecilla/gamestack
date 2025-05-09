@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import DefaultLayout from './components/Layout/Default';
+import DefaultLayout from './components/layout/Default';
 
 import HomePage from './pages/Home';
 import GameDetailsPage from './pages/Games/GameDetails';
 import AddGamePage from './pages/Games/AddGame';
+import Signup from './pages/Auth/Signup';
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'signup',
+        element: <Signup />,
       },
       {
         path: 'games',
