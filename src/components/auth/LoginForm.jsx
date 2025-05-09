@@ -2,6 +2,7 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import useInput from '../../hooks/useInput';
 import { isEmailValid, isNotEmpty } from '../../util/validations';
+import { Link } from 'react-router-dom';
 
 export default function LoginForm() {
   const emailInput = useInput('', isEmailValid);
@@ -52,6 +53,10 @@ export default function LoginForm() {
             </span>
           )}
         </div>
+
+        <Link to='/signup' className='text-sm text-yellow-700'>
+          Don't have an account?
+        </Link>
 
         <div className='mx-auto'>
           <Button>Login</Button>

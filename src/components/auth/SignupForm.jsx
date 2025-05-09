@@ -2,6 +2,7 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import useInput from '../../hooks/useInput';
 import { isEmailValid, isNotEmpty } from '../../util/validations';
+import { Link } from 'react-router-dom';
 export default function SignupForm() {
   const emailInput = useInput('', isEmailValid);
   const firstNameInput = useInput('', isNotEmpty);
@@ -128,6 +129,10 @@ export default function SignupForm() {
         <div className='mx-auto'>
           <Button>Register</Button>
         </div>
+
+        <Link to='/login' className='text-center text-sm text-yellow-700'>
+          Click to login if you already have an account
+        </Link>
       </form>
     </div>
   );
