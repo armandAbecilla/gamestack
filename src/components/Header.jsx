@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import { userActions } from '../store/userActions';
 
 import logoImg from '../assets/gamestack-logo.png';
+import { Link } from 'react-router-dom';
+
 export default function Header() {
   const dispatch = useDispatch();
 
@@ -17,10 +19,16 @@ export default function Header() {
     <>
       <header className='flex items-center justify-between py-7'>
         <div className='flex items-center gap-4'>
-          <img className='h-16' src={logoImg} alt='Logo image' />
-          <h1 className='font-heading text-darkgreen text-[2rem] font-bold tracking-wider uppercase'>
+          <Link to='/'>
+            <img className='h-16' src={logoImg} alt='Logo image' />
+          </Link>
+
+          <Link
+            to='/'
+            className='font-heading text-darkgreen text-[2rem] font-bold tracking-wider uppercase'
+          >
             GameStack
-          </h1>
+          </Link>
         </div>
         <nav>
           <Button className='hidden xl:block' onClick={handleQuickAdd}>

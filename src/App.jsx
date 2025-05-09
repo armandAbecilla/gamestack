@@ -1,20 +1,38 @@
-import UserGames from './components/UserGames';
-import Header from './components/Header';
-import AddGameModal from './components/AddGameModal';
-import ViewGameModal from './components/ViewGameModal';
-import EditNotesModal from './components/EditNotesModal';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import DefaultLayout from './components/Layout/Default';
+
+import HomePage from './pages/Home';
+import GameDetailsPage from './pages/Games/GameDetails';
+import AddGamePage from './pages/Games/AddGame';
+
+const router = createBrowserRouter([
+  {
+    path: '',
+    element: <DefaultLayout />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: 'games',
+        children: [
+          {
+            path: ':id',
+            element: <GameDetailsPage />,
+          },
+          {
+            path: 'add',
+            element: <AddGamePage />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <main className='container mx-auto px-5'>
-      <Header />
-      <UserGames />
-      {/* Modals here */}
-      <AddGameModal />
-      <ViewGameModal />
-      <EditNotesModal />
-    </main>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;
