@@ -1,44 +1,56 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import DefaultLayout from './components/layout/Default';
-
 import HomePage from './pages/Home';
 import GameDetailsPage from './pages/Games/GameDetails';
 import AddGamePage from './pages/Games/AddGame';
 import SignupPage, { action as signUpAction } from './pages/Auth/Signup';
-import LoginPage from './pages/Auth/Login';
+import LoginPage, { action as loginAction } from './pages/Auth/Login';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import AnonRoute from './components/auth/AnonRoute';
 
 const router = createBrowserRouter([
   {
-    path: '',
-    element: <DefaultLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: 'games',
+        path: '',
+        element: <DefaultLayout />,
         children: [
           {
-            path: ':id',
-            element: <GameDetailsPage />,
+            index: true,
+            element: <HomePage />,
           },
           {
-            path: 'add',
-            element: <AddGamePage />,
+            path: 'games',
+            children: [
+              {
+                path: ':id',
+                element: <GameDetailsPage />,
+              },
+              {
+                path: 'add',
+                element: <AddGamePage />,
+              },
+            ],
           },
         ],
       },
     ],
   },
   {
-    path: 'signup',
-    element: <SignupPage />,
-    action: signUpAction,
-  },
-  {
-    path: 'login',
-    element: <LoginPage />,
+    element: <AnonRoute />,
+    children: [
+      {
+        path: 'signup',
+        element: <SignupPage />,
+        action: signUpAction,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+        action: loginAction,
+      },
+    ],
   },
 ]);
 

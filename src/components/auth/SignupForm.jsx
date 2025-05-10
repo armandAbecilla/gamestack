@@ -94,6 +94,7 @@ export default function SignupForm() {
             id='password'
             label='Password'
             type='password'
+            minLength='6'
             required
           />
           {passwordInput.hasErrors && (
@@ -134,6 +135,12 @@ export default function SignupForm() {
         {data?.error && (
           <span className='block text-center text-sm text-red-500/80'>
             Account already exist!
+          </span>
+        )}
+
+        {data?.message && (
+          <span className='block bg-green-400/80 text-center text-sm'>
+            Signup successful! Please check your inbox for verification email.
           </span>
         )}
 

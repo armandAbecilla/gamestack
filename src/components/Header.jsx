@@ -4,6 +4,7 @@ import Button from './UI/Button';
 // redux
 import { useDispatch } from 'react-redux';
 import { userActions } from '../store/userActions';
+import { authActions } from '../store/auth';
 
 import logoImg from '../assets/gamestack-logo.png';
 import { Link } from 'react-router-dom';
@@ -13,6 +14,11 @@ export default function Header() {
 
   function handleQuickAdd() {
     dispatch(userActions.showAdd());
+  }
+
+  function handleLogout() {
+    localStorage.clear();
+    dispatch(authActions.clearUser());
   }
 
   return (
@@ -30,7 +36,11 @@ export default function Header() {
             GameStack
           </Link>
         </div>
-        <nav>
+        <nav className='flex gap-4'>
+          <Button textOnly onClick={handleLogout}>
+            Sign out
+          </Button>
+
           <Button className='hidden xl:block' onClick={handleQuickAdd}>
             Quick Add
           </Button>

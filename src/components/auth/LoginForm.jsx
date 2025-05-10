@@ -2,18 +2,30 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import useInput from '../../hooks/useInput';
 import { isEmailValid, isNotEmpty } from '../../util/validations';
-import { Link } from 'react-router-dom';
+import { Link, Form, useActionData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export default function LoginForm() {
   const emailInput = useInput('', isEmailValid);
   const passwordInput = useInput('', isNotEmpty);
+  const [errors, setErrors] = useState(null);
+  const data = useActionData();
+
+  useEffect(() => {
+    if (data) {
+      const actionData = JSON.parse(data);
+      if (actionData?.status === 400) {
+        setErrors(actionData.message);
+      }
+    }
+  }, [data]);
 
   return (
     <div className='border-black-50 border p-8'>
       <h3 className='font-heading text-darkgreen mb-4 text-center text-2xl font-semibold uppercase'>
         Login at dagdagan na ang backlog!
       </h3>
-      <form className='flex flex-col gap-4'>
+      <Form method='POST' className='flex flex-col gap-4'>
         <div>
           <label htmlFor='email' className='text-stone-400'>
             Email
@@ -58,10 +70,14 @@ export default function LoginForm() {
           Don't have an account?
         </Link>
 
+        {errors && (
+          <p className='text-center text-sm text-red-500/80'>{errors}</p>
+        )}
+
         <div className='mx-auto'>
           <Button>Login</Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

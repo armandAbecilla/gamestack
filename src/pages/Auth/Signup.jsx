@@ -12,7 +12,7 @@ export default function SignupPage() {
   );
 }
 
-export async function action({ request, params }) {
+export async function action({ request }) {
   const data = await request.formData();
 
   const user = {
@@ -25,10 +25,15 @@ export async function action({ request, params }) {
   try {
     const res = await axios.post(`${projectConfig.API_URL}/auth/signup`, user);
 
-    return res;
+    if (res) {
+      return new Response(
+        JSON.stringify({ message: 'User signup successful!' }),
+        { status: 200 },
+      );
+    }
   } catch (e) {
     return {
-      error: e.response.data.message,
+      error: e.response?.data.message,
     };
   }
 }

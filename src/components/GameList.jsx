@@ -38,6 +38,14 @@ export default function GameList() {
     return <p className='text-center text-4xl'>Getting your games...</p>;
   }
 
+  if (!isLoading && totalGameCount == 0) {
+    return (
+      <p className='text-center text-4xl'>
+        Start adding games to your backlog now!
+      </p>
+    );
+  }
+
   return (
     <div>
       <Pagination
