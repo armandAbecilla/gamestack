@@ -4,7 +4,7 @@ import DefaultLayout from './components/layout/Default';
 import HomePage from './pages/Home';
 import GameDetailsPage from './pages/Games/GameDetails';
 import AddGamePage from './pages/Games/AddGame';
-import SignupPage from './pages/Auth/Signup';
+import SignupPage, { action as signUpAction } from './pages/Auth/Signup';
 import LoginPage from './pages/Auth/Login';
 
 const router = createBrowserRouter([
@@ -34,6 +34,7 @@ const router = createBrowserRouter([
   {
     path: 'signup',
     element: <SignupPage />,
+    action: signUpAction,
   },
   {
     path: 'login',

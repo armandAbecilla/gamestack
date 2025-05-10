@@ -2,7 +2,7 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import useInput from '../../hooks/useInput';
 import { isEmailValid, isNotEmpty } from '../../util/validations';
-import { Link } from 'react-router-dom';
+import { Link, Form, useActionData, useNavigation } from 'react-router-dom';
 export default function SignupForm() {
   const emailInput = useInput('', isEmailValid);
   const firstNameInput = useInput('', isNotEmpty);
@@ -10,14 +10,19 @@ export default function SignupForm() {
   const passwordInput = useInput('', isNotEmpty);
   const repeatPasswordInput = useInput('', isNotEmpty);
 
+  const data = useActionData();
+  const navigation = useNavigation();
+
   const isPasswordsMatched = passwordInput.value === repeatPasswordInput.value;
+  const isLoading =
+    navigation.state === 'loading' || navigation.state === 'submitting';
 
   return (
     <div className='border-black-50 border p-8'>
       <h3 className='font-heading text-darkgreen mb-4 text-center text-2xl font-semibold uppercase'>
         Signup now and grow your backlog!
       </h3>
-      <form className='flex flex-col gap-4'>
+      <Form method='POST' className='flex flex-col gap-4'>
         <div>
           <label htmlFor='email' className='text-stone-400'>
             Email
@@ -126,14 +131,20 @@ export default function SignupForm() {
             )}
         </div>
 
+        {data?.error && (
+          <span className='block text-center text-sm text-red-500/80'>
+            Account already exist!
+          </span>
+        )}
+
         <div className='mx-auto'>
-          <Button>Register</Button>
+          <Button disabled={isLoading}>Register</Button>
         </div>
 
         <Link to='/login' className='text-center text-sm text-yellow-700'>
-          Click to login if you already have an account
+          Login if you already have an account
         </Link>
-      </form>
+      </Form>
     </div>
   );
 }
