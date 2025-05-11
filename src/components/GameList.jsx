@@ -19,8 +19,6 @@ export default function GameList() {
   const isLoading = useSelector((state) => state.games.isLoading);
   const totalGameCount = useSelector((state) => state.games.totalGames);
 
-  console.log(userGames);
-
   // Pagination state
   const [page, setPage] = useState(1);
 

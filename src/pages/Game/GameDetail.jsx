@@ -6,7 +6,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import GameDetails from '../../components/GameDetails';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUserGameData } from '../../store/games-actions';
 
 const fetchGameDetails = async (gameId) => {
   const result = await axios.get(`${projectConfig.API_URL}/rawg/${gameId}`);
@@ -32,6 +33,7 @@ const removeGameFromList = async (id) => {
 export default function GameDetailPage() {
   const auth = useSelector((state) => state.auth);
   const params = useParams();
+  const dispatch = useDispatch();
   // game information
   const [gameData, setGameData] = useState();
   const [isGameFetching, setIsGameFetching] = useState(false);
@@ -60,7 +62,7 @@ export default function GameDetailPage() {
       const data = {
         userId: auth.user.id,
         rawgGameId: params.id,
-        status: 'whishlist',
+        status: '',
         notes: 'test',
       };
 
@@ -79,6 +81,28 @@ export default function GameDetailPage() {
     }
   }
 
+  async function handleStatusChange(status) {
+    const updatedData = {
+      status: status,
+    };
+
+    const data = await dispatch(
+      updateUserGameData({
+        id: userGameData.id,
+        gameData: updatedData,
+      }),
+    );
+
+    if (data) {
+      setUserGameData((prevdata) => ({
+        ...prevdata,
+        status: status,
+      }));
+    } else {
+      setUserGameData(userGameData);
+    }
+  }
+
   return (
     <GameDetails
       gameData={gameData}
@@ -86,6 +110,7 @@ export default function GameDetailPage() {
       userGameData={userGameData}
       onAddToLibrary={handleAddToLibrary}
       onRemoveFromLibrary={handleRemoveFromLibrary}
+      onStatusChange={handleStatusChange}
     />
   );
 }

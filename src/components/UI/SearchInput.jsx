@@ -8,7 +8,7 @@ export default function SearchInput({
   return (
     <div className='relative'>
       <input
-        className={`w-full bg-white px-2 py-1 text-xl focus:outline-0 ${className}`}
+        className={`w-full bg-white px-2 py-1 focus:outline-0 xl:text-xl ${className}`}
         id={id}
         name={id}
         {...props}

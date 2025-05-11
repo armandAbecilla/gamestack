@@ -7,9 +7,13 @@ const MAX_PAGE_SIZE = 25;
 
 export const fetchUserGames = createAsyncThunk(
   'games/fetchUserGames',
-  async ({ userId, page = 1, limit = MAX_PAGE_SIZE }, thunkAPI) => {
+  async ({ userId, status, page = 1, limit = MAX_PAGE_SIZE }, thunkAPI) => {
     try {
       let url = `${projectConfig.API_URL}/games/user/${userId}?page=${page}&limit=${limit}`;
+
+      if (status) {
+        url += '&status=' + status;
+      }
 
       const response = await axios.get(url);
       return response.data;

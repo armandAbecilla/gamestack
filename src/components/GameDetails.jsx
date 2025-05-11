@@ -1,5 +1,7 @@
 import GameDetailsSkeleton from './skeleton-loaders/GameDetails';
 import Button from './UI/Button';
+import FancySelect from '../components/UI/FancySelect';
+import { statusOptions } from '../data/dropdowns';
 
 export default function GameDetails({
   gameData,
@@ -7,6 +9,7 @@ export default function GameDetails({
   onAddToLibrary,
   onRemoveFromLibrary,
   userGameData,
+  onStatusChange,
 }) {
   const platforms = gameData
     ? gameData.platforms.map((item, index) => (
@@ -53,13 +56,15 @@ export default function GameDetails({
     <>
       {gameData && !isLoading && (
         <div>
-          <div className='flex gap-5'>
+          <div className='flex flex-col gap-5 xl:flex-row'>
             <img
-              className='aspect-auto h-[700px] max-w-[500px] object-cover'
+              className='aspect-auto max-w-[500px] object-cover xl:h-[700px]'
               src={gameData.background_image}
             />
             <div className='flex flex-col gap-4'>
-              <h1 className='font-heading text-5xl'>{gameData.name}</h1>
+              <h1 className='font-heading text-3xl xl:text-5xl'>
+                {gameData.name}
+              </h1>
               <h4 className='text-stone-100'>
                 Release date: {gameData.released}
               </h4>
@@ -78,6 +83,14 @@ export default function GameDetails({
                   __html: gameData.description,
                 }}
               ></div>
+
+              {onUserList && (
+                <FancySelect
+                  options={statusOptions}
+                  defaultValue={userGameData.status}
+                  onChange={onStatusChange}
+                />
+              )}
 
               {/* user options */}
               <div className='mt-4'>
@@ -102,7 +115,7 @@ export default function GameDetails({
           <div className='mt-4 border-t border-stone-700 pt-4'>
             <h4 className='text-xl text-stone-200'>PC System Requirements</h4>
 
-            <div className='flex gap-15'>
+            <div className='flex flex-col gap-4 xl:flex-row xl:gap-15'>
               <div className='mt-4 basis-1/2'>{minimumRequirement}</div>
               <div className='mt-4 basis-1/2'>{recommendedRequirement}</div>
             </div>
