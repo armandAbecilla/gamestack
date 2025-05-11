@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'tailwindcss';
+@import 'react-loading-skeleton/dist/skeleton.css';
 
 @theme {
   --font-body: 'Work Sans', sans-serif;
