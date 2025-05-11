@@ -7,6 +7,7 @@ import SignupPage, { action as signUpAction } from './pages/Auth/Signup';
 import LoginPage, { action as loginAction } from './pages/Auth/Login';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AnonRoute from './components/auth/AnonRoute';
+import GameDetailPage from './pages/Game/GameDetail';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,16 @@ const router = createBrowserRouter([
             index: true,
             element: <HomePage />,
           },
+          {
+            path: 'game',
+            children: [
+              {
+                path: ':id',
+                element: <GameDetailPage />,
+              },
+            ],
+          },
+          // pages below might be replaced
           {
             path: 'games',
             children: [

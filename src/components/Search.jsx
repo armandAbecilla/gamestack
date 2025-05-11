@@ -113,7 +113,7 @@ export default function Search() {
     <ul>
       {searchResult.map((game) => (
         <li key={game.id} className='border-stone-600 p-1 not-first:border-t'>
-          <Link className='flex items-center gap-5'>
+          <Link to={`/game/${game.id}`} className='flex items-center gap-5'>
             <img
               className='aspect-square h-15 object-cover'
               src={game.background_image}
