@@ -4,7 +4,8 @@ import Button from './UI/Button';
 export default function GameDetails({
   gameData,
   isLoading,
-  onAddOrRemoveToList,
+  onAddToLibrary,
+  onRemoveFromLibrary,
   userGameData,
 }) {
   const platforms = gameData
@@ -48,8 +49,6 @@ export default function GameDetails({
 
   const onUserList = userGameData && !!userGameData;
 
-  console.log(userGameData);
-
   return (
     <>
       {gameData && !isLoading && (
@@ -82,9 +81,13 @@ export default function GameDetails({
 
               {/* user options */}
               <div className='mt-4'>
-                <Button onClick={onAddOrRemoveToList}>
-                  {!onUserList ? 'Add to Library' : 'Remove to Library'}
-                </Button>
+                {!onUserList ? (
+                  <Button onClick={onAddToLibrary}>Add to Library</Button>
+                ) : (
+                  <Button onClick={onRemoveFromLibrary}>
+                    Remove from Library
+                  </Button>
+                )}
               </div>
 
               {/* <div>

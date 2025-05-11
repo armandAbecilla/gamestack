@@ -35,7 +35,7 @@ export default function GameDetailPage() {
   // game information
   const [gameData, setGameData] = useState();
   const [isGameFetching, setIsGameFetching] = useState(false);
-  // user information for the selected game
+  // user information for the selected game, e.g: Is game added in library
   const [userGameData, setUserGameData] = useState();
 
   useEffect(() => {
@@ -55,8 +55,7 @@ export default function GameDetailPage() {
     fetchSelectedGame();
   }, [params.id, auth.user.id]);
 
-  async function handleAddRemoveToList() {
-    // if action == add to library
+  async function handleAddToLibrary() {
     if (!userGameData) {
       const data = {
         userId: auth.user.id,
@@ -70,7 +69,9 @@ export default function GameDetailPage() {
 
       setUserGameData(newUserGameData);
     }
+  }
 
+  async function handleRemoveFromLibrary() {
     // if action == remove from library
     if (userGameData) {
       removeGameFromList(userGameData.id);
@@ -82,8 +83,9 @@ export default function GameDetailPage() {
     <GameDetails
       gameData={gameData}
       isLoading={isGameFetching}
-      onAddOrRemoveToList={handleAddRemoveToList}
       userGameData={userGameData}
+      onAddToLibrary={handleAddToLibrary}
+      onRemoveFromLibrary={handleRemoveFromLibrary}
     />
   );
 }
