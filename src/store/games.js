@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserGames, fetchSelectedGame, addGame } from './games-actions';
+import { fetchUserGames } from './games-actions';
 
 const initialState = {
   games: [],
@@ -45,26 +45,7 @@ const gamesSlice = createSlice({
         state.games = action.payload.games;
         state.totalGames = action.payload.count;
       })
-      .addCase(fetchUserGames.rejected, setLoadingState('isLoading', false))
-      // Fetch Selected game
-      .addCase(
-        fetchSelectedGame.pending,
-        setLoadingState('isSelectedGameFetching', true),
-      )
-      .addCase(fetchSelectedGame.fulfilled, (state, action) => {
-        state.isSelectedGameFetching = false;
-        state.selectedGameData = action.payload.data;
-      })
-      .addCase(
-        fetchSelectedGame.rejected,
-        setLoadingState('isSelectedGameFetching', false),
-      )
-      // Add new game
-      .addCase(addGame.pending, setLoadingState('isAddGameLoading', true))
-      .addCase(addGame.fulfilled, (state) => {
-        state.isAddGameLoading = false;
-      })
-      .addCase(addGame.rejected, setLoadingState('isAddGameLoading', false));
+      .addCase(fetchUserGames.rejected, setLoadingState('isLoading', false));
   },
 });
 

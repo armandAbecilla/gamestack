@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
-import AddGameModal from '../AddGameModal';
 import EditNoteModal from '../EditNotesModal';
 
 export default function DefaultLayout() {
@@ -10,7 +9,6 @@ export default function DefaultLayout() {
       <main>
         <Outlet />
       </main>
-      <AddGameModal />
       <EditNoteModal />
     </div>
   );

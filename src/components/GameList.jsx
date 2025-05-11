@@ -14,6 +14,7 @@ const MAX_PAGE_SIZE = 25;
 export default function GameList() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  // fetch via redux store
   const userGames = useSelector((state) => state.games.games);
   const isLoading = useSelector((state) => state.games.isLoading);
   const totalGameCount = useSelector((state) => state.games.totalGames);

@@ -19,33 +19,6 @@ export const fetchUserGames = createAsyncThunk(
   },
 );
 
-export const fetchSelectedGame = createAsyncThunk(
-  'games/fetchSelectedGame',
-  async (id, thunkAPI) => {
-    try {
-      const response = await axios.get(`${projectConfig.API_URL}/games/${id}`);
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue('Failed to fetch the selected game');
-    }
-  },
-);
-
-export const addGame = createAsyncThunk(
-  'games/addGame',
-  async (gamedata, thunkAPI) => {
-    try {
-      const response = await axios.post(`${projectConfig.API_URL}/games/add`, {
-        gameData: gamedata,
-      });
-
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue('Failed to add a game');
-    }
-  },
-);
-
 export const updateUserGameData = createAsyncThunk(
   'games/upateNotes',
   async ({ id, gameData }, thunkAPI) => {

@@ -8,12 +8,6 @@ const userActionSlice = createSlice({
   name: 'userAction',
   initialState: initialState,
   reducers: {
-    showAdd(state) {
-      state.action = 'add';
-    },
-    showGameDetailView(state) {
-      state.action = 'view';
-    },
     showEditNote(state) {
       state.action = 'editNote';
     },
