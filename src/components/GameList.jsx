@@ -13,9 +13,12 @@ const MAX_PAGE_SIZE = 25;
 
 export default function GameList() {
   const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
   const userGames = useSelector((state) => state.games.games);
   const isLoading = useSelector((state) => state.games.isLoading);
   const totalGameCount = useSelector((state) => state.games.totalGames);
+
+  console.log(userGames);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -23,11 +26,12 @@ export default function GameList() {
   useEffect(() => {
     dispatch(
       fetchUserGames({
+        userId: auth.user.id,
         page: page,
       }),
     );
     // page as deps since we do want to re-run api call if page changes
-  }, [page, dispatch]);
+  }, [page, dispatch, auth.user.id]);
 
   // pagination functions
   async function handleOnSetPage(page) {
@@ -60,8 +64,8 @@ export default function GameList() {
           <GameCard
             key={game.id}
             id={game.id}
-            name={game.details.name}
-            image={game.details.background_image}
+            name={game.name}
+            image={game.background_image}
           />
         ))}
       </Pagination>

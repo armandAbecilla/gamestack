@@ -21,7 +21,7 @@ export default function GameCard({ id, image, name }) {
 
   return (
     <Link
-      to={`/games/${id}`}
+      to={`/game/${id}`}
       className='group bg-black-100 border-black-50 shadow-black-50 relative cursor-pointer overflow-hidden rounded-lg border shadow transition-all duration-300 ease-in-out hover:opacity-70'
     >
       <AdvancedImage

@@ -26,6 +26,7 @@ function getOptionClassNames(options, selectOption) {
 }
 
 export default function FancySelect({
+  placeholderValue = 'Please Select',
   options,
   dropdownPosition = 'top',
   defaultValue,
@@ -138,7 +139,7 @@ export default function FancySelect({
         type='button'
         className={`w-max min-w-fit cursor-pointer rounded-full border border-stone-700/50 px-5 py-1 text-left backdrop-blur-md ${selectedClasess} ${disabledClasses}`}
       >
-        {selectedLabel || 'Please Select'}
+        {selectedLabel || placeholderValue}
       </button>
 
       {name && selected && (

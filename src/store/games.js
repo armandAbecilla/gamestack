@@ -42,7 +42,7 @@ const gamesSlice = createSlice({
       .addCase(fetchUserGames.pending, setLoadingState('isLoading', true))
       .addCase(fetchUserGames.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.games = action.payload.data;
+        state.games = action.payload.games;
         state.totalGames = action.payload.count;
       })
       .addCase(fetchUserGames.rejected, setLoadingState('isLoading', false))
