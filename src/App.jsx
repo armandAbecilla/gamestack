@@ -9,9 +9,14 @@ import AnonRoute from './components/auth/AnonRoute';
 // import GameDetailPage from './pages/Game/GameDetail';
 
 const GameDetailPage = lazy(() => import('./pages/Game/GameDetail'));
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // Lazy loader, implemented this on top of the loader inside the component
 import GameDetailsSkeleton from './components/skeleton-loaders/GameDetails';
+
+// react query imports
+import queryClient from './api/index';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 const router = createBrowserRouter([
   {
@@ -61,7 +66,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={true} />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

@@ -22,10 +22,11 @@ This app includes a full implementation of core React concepts:
   - `useCallback` for memoizing functions
   - `useContext` for global state
   - `useActionState` for managing asynchronous form submissions or actions
-- 🧠 **Context API + Reducers** for scalable global state management
+- 🧠 **Redux toolkit** for scalable global state management
 - 🛠️ **Custom Hooks** to encapsulate reusable logic
 - 📝 **Forms & Validations** for a smooth user experience
-- 🌐 **HTTP Requests** made to a dummy backend bundled within the project
+- 🌐 **HTTP Requests**
+- **Tanstack Query (React query)** - for handling cached data
 
 ---
 

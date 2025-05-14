@@ -1,61 +1,117 @@
-import { projectConfig } from '../../config';
-import axios from 'axios';
-// this component is for the Game information, data will be fetched from RAWG.io API
-// and also include other information specific to user such as STATUS and NOTE
-
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import GameDetails from '../../components/GameDetails';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserGameData } from '../../store/games-actions';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-const fetchGameDetails = async (gameId) => {
-  const result = await axios.get(`${projectConfig.API_URL}/rawg/${gameId}`);
-  return result.data;
-};
-
-const fetchUserGameDetail = async (gameId, userId) => {
-  const result = await axios.get(
-    `${projectConfig.API_URL}/games/${gameId}?userId=${userId}`,
-  );
-  return result.data[0];
-};
-
-const addGameToList = async (data) => {
-  const result = await axios.post(`${projectConfig.API_URL}/games/add`, data);
-  return result.data;
-};
-
-const removeGameFromList = async (id) => {
-  await axios.delete(`${projectConfig.API_URL}/games/${id}`);
-};
+import queryClient from '../../api/index';
+import {
+  fetchGameDetails,
+  fetchUserGameDetail,
+  addGameToList,
+  removeGameFromList,
+  updateUserGameData,
+} from '../../api/games';
 
 export default function GameDetailPage() {
   const auth = useSelector((state) => state.auth);
   const params = useParams();
-  const dispatch = useDispatch();
+  const userGameKey = ['userGame', params.id, auth.user.id]; // keys for queryKey
+
   // game information
-  const [gameData, setGameData] = useState();
-  const [isGameFetching, setIsGameFetching] = useState(false);
-  // user information for the selected game, e.g: Is game added in library
-  const [userGameData, setUserGameData] = useState();
+  const { data: gameData, isPending: isGameFetching } = useQuery({
+    queryKey: ['selectedGame', params.id],
+    queryFn: ({ signal }) => {
+      return fetchGameDetails({ signal, gameId: params.id });
+    },
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    const fetchSelectedGame = async () => {
-      setIsGameFetching(true);
+  const { data: userGameData } = useQuery({
+    queryKey: userGameKey,
+    queryFn: ({ signal, queryKey }) => {
+      return fetchUserGameDetail({
+        signal,
+        userId: auth.user.id,
+        gameId: params.id,
+      });
+    },
+    refetchOnWindowFocus: false,
+  });
 
-      const [fetchedGameDetails, fetchedUserGameData] = await Promise.all([
-        fetchGameDetails(params.id),
-        fetchUserGameDetail(params.id, auth.user.id),
-      ]);
+  const { mutate: mutateAddToLibrary } = useMutation({
+    mutationFn: addGameToList,
+    onMutate: async ({ data }) => {
+      const gameToAdd = data;
+      await queryClient.cancelQueries({
+        queryKey: userGameKey,
+      });
+      const previousUserData = queryClient.getQueryData(userGameKey);
 
-      setGameData(fetchedGameDetails);
-      setUserGameData(fetchedUserGameData);
-      setIsGameFetching(false);
-    };
+      queryClient.setQueryData(userGameKey, gameToAdd);
 
-    fetchSelectedGame();
-  }, [params.id, auth.user.id]);
+      return {
+        previousUserData: previousUserData,
+      };
+    },
+    onError: (error, data, context) => {
+      queryClient.setQueryData(userGameKey, null);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: userGameKey,
+      });
+    },
+  });
+
+  const { mutate: mutateRemoveFromLibrary } = useMutation({
+    mutationFn: removeGameFromList,
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: userGameKey,
+      });
+      const previousUserData = queryClient.getQueryData(userGameKey);
+
+      queryClient.setQueryData(userGameKey, null);
+
+      return {
+        previousUserData: previousUserData,
+      };
+    },
+    onError: (error, data, context) => {
+      queryClient.setQueryData(userGameKey, context.previousUserData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: userGameKey,
+      });
+    },
+  });
+
+  const { mutate: mutateUpdateUserGameData } = useMutation({
+    mutationFn: updateUserGameData,
+    onMutate: async (data) => {
+      const updatedData = data.gameData;
+      await queryClient.cancelQueries({
+        queryKey: userGameKey,
+      });
+      const previousUserData = queryClient.getQueryData(userGameKey);
+
+      queryClient.setQueryData(userGameKey, updatedData);
+
+      return {
+        previousUserData: previousUserData,
+      };
+    },
+    onError: (error, data, context) => {
+      console.log(error);
+      queryClient.setQueryData(userGameKey, context.previousUserData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: userGameKey,
+      });
+    },
+  });
 
   async function handleAddToLibrary() {
     if (!userGameData) {
@@ -66,41 +122,29 @@ export default function GameDetailPage() {
         notes: 'test',
       };
 
-      const res = await addGameToList(data);
-      const newUserGameData = res.data[0];
-
-      setUserGameData(newUserGameData);
+      mutateAddToLibrary({
+        data: data,
+      });
     }
   }
 
   async function handleRemoveFromLibrary() {
     // if action == remove from library
     if (userGameData) {
-      removeGameFromList(userGameData.id);
-      setUserGameData(null);
+      mutateRemoveFromLibrary({ id: userGameData.id });
     }
   }
 
   async function handleStatusChange(status) {
     const updatedData = {
+      ...userGameData,
       status: status,
     };
 
-    const data = await dispatch(
-      updateUserGameData({
-        id: userGameData.id,
-        gameData: updatedData,
-      }),
-    );
-
-    if (data) {
-      setUserGameData((prevdata) => ({
-        ...prevdata,
-        status: status,
-      }));
-    } else {
-      setUserGameData(userGameData);
-    }
+    mutateUpdateUserGameData({
+      id: userGameData.id,
+      gameData: updatedData,
+    });
   }
 
   return (

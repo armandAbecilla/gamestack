@@ -1,7 +1,6 @@
-import { projectConfig } from '../config';
-import axios from 'axios';
 // components
 import SearchInput from './UI/SearchInput';
+import Skeleton from 'react-loading-skeleton';
 
 // react hooks
 import { useState, useEffect, useRef } from 'react';
@@ -11,49 +10,36 @@ import useDebounce from '../hooks/useDebounce';
 
 // redux
 import { Link } from 'react-router-dom';
-import Skeleton from 'react-loading-skeleton';
-
-const fetchGameByKeyword = async (query) => {
-  const result = await axios.get(
-    `${projectConfig.API_URL}/rawg/search?keyword=${query}`,
-  );
-
-  return result.data.games;
-};
+import { useQuery } from '@tanstack/react-query';
+import { fetchGameByKeyword } from '../api/games';
 
 export default function Search() {
   const [search, setSearch] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
   const [isSearchOpen, setIssearchOpen] = useState(false);
   const debouncedSearchTerm = useDebounce(search, 1000);
-  const isInitialLoad = useRef(true);
   const searchRef = useRef();
 
-  // Side Effects
-  // for debouncing the search input
+  const {
+    data: searchResult,
+    isPending: isSearching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['games', debouncedSearchTerm],
+    queryFn: ({ signal }) =>
+      fetchGameByKeyword({ signal, searchTerm: debouncedSearchTerm }),
+    enabled: debouncedSearchTerm !== '',
+  });
+
   useEffect(() => {
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
-      return;
-    }
-
-    const fetchdata = async () => {
-      setIsSearching(true);
+    if (searchResult) {
       setIssearchOpen(true);
-
-      const games = await fetchGameByKeyword(debouncedSearchTerm);
-      if (games) {
-        setSearchResult(games);
-      }
-
-      setIsSearching(false);
-    };
-
-    if (debouncedSearchTerm.trim() !== '') {
-      fetchdata();
     }
-  }, [debouncedSearchTerm]);
+
+    return () => {
+      setIssearchOpen(false);
+    };
+  }, [searchResult, debouncedSearchTerm]);
 
   // Close on outside click
   useEffect(() => {
@@ -85,6 +71,8 @@ export default function Search() {
     setIssearchOpen(true);
   }
 
+  let searchResultContent;
+
   const skeletonLoaders = (
     <ul>
       {[1, 2, 3, 4].map((i) => (
@@ -111,7 +99,7 @@ export default function Search() {
 
   const searchResultList = (
     <ul>
-      {searchResult.map((game) => (
+      {searchResult?.map((game) => (
         <li key={game.id} className='border-stone-600 p-1 not-first:border-t'>
           <Link to={`/game/${game.id}`} className='flex items-center gap-5'>
             <img
@@ -125,7 +113,13 @@ export default function Search() {
     </ul>
   );
 
-  const searchResultContent = isSearching ? skeletonLoaders : searchResultList;
+  if (isSearching) {
+    searchResultContent = skeletonLoaders;
+  }
+
+  if (searchResult) {
+    searchResultContent = searchResultList;
+  }
 
   return (
     <>
