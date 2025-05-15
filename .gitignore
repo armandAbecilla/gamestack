@@ -24,4 +24,8 @@ dist-ssr
 *.sw?
 
 .env.local
+<<<<<<< HEAD
 package-lock.json
+=======
+package.lock.json
+>>>>>>> 063aa7898edf4410e24f73cab90ea8b52782b951
