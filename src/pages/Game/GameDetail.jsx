@@ -14,7 +14,7 @@ import {
 } from '../../api/games';
 import { useState } from 'react';
 
-const useOptimisticUpdating = (queryKey, mutationFn) => {
+const useOptimisticUpdating = (queryKey, mutationFn, options = {}) => {
   return useMutation({
     mutationFn: mutationFn,
     onMutate: async (newData) => {
@@ -39,6 +39,7 @@ const useOptimisticUpdating = (queryKey, mutationFn) => {
         queryKey: queryKey,
       });
     },
+    ...options,
   });
 };
 
@@ -54,7 +55,6 @@ export default function GameDetailPage() {
     queryFn: ({ signal }) => {
       return fetchGameDetails({ signal, gameId: params.id });
     },
-    refetchOnWindowFocus: false,
   });
 
   const { data: userGameData } = useQuery({
@@ -66,10 +66,16 @@ export default function GameDetailPage() {
         gameId: params.id,
       });
     },
-    refetchOnWindowFocus: false,
   });
 
-  const mutateAddToLibrary = useOptimisticUpdating(userGameKey, addGameToList);
+  const mutateAddToLibrary = useOptimisticUpdating(userGameKey, addGameToList, {
+    onSuccess: () => {
+      console.log('tangina ');
+      queryClient.invalidateQueries({
+        queryKey: ['games'],
+      });
+    },
+  });
   const mutateRemoveFromLibrary = useOptimisticUpdating(
     userGameKey,
     removeGameFromList,

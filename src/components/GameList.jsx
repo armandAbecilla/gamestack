@@ -13,9 +13,13 @@ export default function GameList({ statusFilter }) {
   // Pagination state
   const [page, setPage] = useState(1);
 
+  const gamesQueryKey = statusFilter
+    ? ['games', page, statusFilter]
+    : ['games', page];
+
   // react query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['games', page, statusFilter || ''],
+    queryKey: gamesQueryKey,
     queryFn: ({ signal }) =>
       fetchUserGames({
         signal,
@@ -23,11 +27,6 @@ export default function GameList({ statusFilter }) {
         page: page,
         status: statusFilter,
       }),
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    cacheTime: 1000 * 60 * 15, // Keep in memory longer
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
   });
 
   // pagination functions
