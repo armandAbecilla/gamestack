@@ -15,7 +15,7 @@ export default function GameList({ statusFilter }) {
 
   // react query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['games', page, statusFilter],
+    queryKey: ['games', page, statusFilter || ''],
     queryFn: ({ signal }) =>
       fetchUserGames({
         signal,
