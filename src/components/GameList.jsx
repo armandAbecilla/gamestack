@@ -23,9 +23,8 @@ export default function GameList({ statusFilter }) {
         page: page,
         status: statusFilter,
       }),
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    cacheTime: 1000 * 60 * 15, // Keep in memory longer
-    refetchOnMount: false,
+    // staleTime: 1000 * 60 * 10, // 10 minutes
+    // cacheTime: 1000 * 60 * 15, // Keep in memory longer
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
