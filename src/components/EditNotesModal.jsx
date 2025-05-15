@@ -4,80 +4,55 @@ import Input from './UI/Input';
 import Button from './UI/Button';
 
 // react hooks
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 
-// redux
-import { gamesActions } from '../store/games';
-import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../store/userActions';
+export default function EditNotesModal({
+  gameTitle,
+  userGameData,
+  onUpdateNote,
+  isUpdating,
+  onClose,
+  open,
+}) {
+  const inputRef = useRef();
 
-import { updateUserGameData } from '../store/games-actions';
-
-export default function EditNotesModal() {
-  const selectedGameData = useSelector((state) => state.games.selectedGameData);
-  const userAction = useSelector((state) => state.userActions.action);
-  const [notes, setNotes] = useState('');
-  const [state, editNoteFormAction, isFormSubmitting] =
-    useActionState(editNoteAction);
-  const dispatch = useDispatch();
-
+  // will autoclose once the updating is done
   useEffect(() => {
-    if (selectedGameData) {
-      setNotes(selectedGameData.notes);
+    if (!isUpdating) {
+      handleClose();
     }
-  }, [selectedGameData]);
+  }, [isUpdating]);
 
-  async function editNoteAction(prevFormState, formData) {
-    console.log(formData);
-    console.log('submitting');
+  function handleUpdateNote(e) {
+    e.preventDefault();
 
-    const updateNote = formData.get('notes');
-
-    const updatedGameData = {
-      ...selectedGameData,
-      notes: updateNote,
-    };
-
-    dispatch(
-      updateUserGameData({
-        id: selectedGameData.id,
-        gameData: updatedGameData,
-      }),
-    );
-
-    // update the current data
-    dispatch(gamesActions.setSelectedGame(updatedGameData));
-    handleClose();
-  }
-
-  function handleNotesChange(e) {
-    setNotes(e.target.value);
+    onUpdateNote(inputRef.current.value);
   }
 
   function handleClose() {
-    dispatch(userActions.resetAction()); // close the modal first
-    dispatch(userActions.showGameDetailView());
+    onClose();
   }
 
   return (
     <Modal
       className='m-auto max-w-lg' // set the max width
       onClose={handleClose}
-      open={userAction === 'editNote' && selectedGameData}
+      open={open}
     >
       <h4 className='font-heading mb-4 flex items-center text-xl text-stone-300'>
         Update Notes
       </h4>
-      <form action={editNoteFormAction}>
+
+      <form onSubmit={handleUpdateNote}>
         <Input
           id='notes'
           textarea
-          value={notes}
-          onChange={handleNotesChange}
           className='rounded-sm bg-white/95 text-lg'
           rows='10'
-          placeholder={`Write your thoughts about ${selectedGameData?.details?.name}...`}
-          disabled={isFormSubmitting}
+          placeholder={`Write your thoughts about ${gameTitle}...`}
+          disabled={isUpdating}
+          ref={inputRef}
+          defaultValue={userGameData?.notes}
         />
         <div className='mt-4 flex justify-end gap-5'>
           <Button
@@ -85,12 +60,12 @@ export default function EditNotesModal() {
             type='button'
             className='text-white! hover:text-stone-100!'
             onClick={handleClose}
-            disabled={isFormSubmitting}
+            disabled={isUpdating}
           >
             Cancel
           </Button>
-          <Button type='submit' className='button' disabled={isFormSubmitting}>
-            {isFormSubmitting ? 'Saving...' : 'Update'}
+          <Button type='submit' className='button' disabled={isUpdating}>
+            {isUpdating ? 'Saving...' : 'Update'}
           </Button>
         </div>
       </form>

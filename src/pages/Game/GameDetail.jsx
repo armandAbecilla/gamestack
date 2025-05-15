@@ -1,5 +1,6 @@
-import { useParams } from 'react-router-dom';
 import GameDetails from '../../components/GameDetails';
+import EditNotesModal from '../../components/EditNotesModal';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -11,11 +12,41 @@ import {
   removeGameFromList,
   updateUserGameData,
 } from '../../api/games';
+import { useState } from 'react';
+
+const useOptimisticUpdating = (queryKey, mutationFn) => {
+  return useMutation({
+    mutationFn: mutationFn,
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKey,
+      });
+
+      const prevData = queryClient.getQueryData(queryKey);
+      // set data
+      queryClient.setQueryData(queryKey, newData);
+
+      return {
+        prevData: prevData,
+      };
+    },
+    onError: (error, data, context) => {
+      // revert to previous data if an error occurs
+      queryClient.setQueryData(queryKey, context.prevData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKey,
+      });
+    },
+  });
+};
 
 export default function GameDetailPage() {
   const auth = useSelector((state) => state.auth);
   const params = useParams();
   const userGameKey = ['userGame', params.id, auth.user.id]; // keys for queryKey
+  const [notesModalOpen, setNotesModalOpen] = useState(false);
 
   // game information
   const { data: gameData, isPending: isGameFetching } = useQuery({
@@ -38,92 +69,25 @@ export default function GameDetailPage() {
     refetchOnWindowFocus: false,
   });
 
-  const { mutate: mutateAddToLibrary } = useMutation({
-    mutationFn: addGameToList,
-    onMutate: async ({ data }) => {
-      const gameToAdd = data;
-      await queryClient.cancelQueries({
-        queryKey: userGameKey,
-      });
-      const previousUserData = queryClient.getQueryData(userGameKey);
-
-      queryClient.setQueryData(userGameKey, gameToAdd);
-
-      return {
-        previousUserData: previousUserData,
-      };
-    },
-    onError: (error, data, context) => {
-      queryClient.setQueryData(userGameKey, null);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: userGameKey,
-      });
-    },
-  });
-
-  const { mutate: mutateRemoveFromLibrary } = useMutation({
-    mutationFn: removeGameFromList,
-    onMutate: async () => {
-      await queryClient.cancelQueries({
-        queryKey: userGameKey,
-      });
-      const previousUserData = queryClient.getQueryData(userGameKey);
-
-      queryClient.setQueryData(userGameKey, null);
-
-      return {
-        previousUserData: previousUserData,
-      };
-    },
-    onError: (error, data, context) => {
-      queryClient.setQueryData(userGameKey, context.previousUserData);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: userGameKey,
-      });
-    },
-  });
-
-  const { mutate: mutateUpdateUserGameData } = useMutation({
-    mutationFn: updateUserGameData,
-    onMutate: async (data) => {
-      const updatedData = data.gameData;
-      await queryClient.cancelQueries({
-        queryKey: userGameKey,
-      });
-      const previousUserData = queryClient.getQueryData(userGameKey);
-
-      queryClient.setQueryData(userGameKey, updatedData);
-
-      return {
-        previousUserData: previousUserData,
-      };
-    },
-    onError: (error, data, context) => {
-      console.log(error);
-      queryClient.setQueryData(userGameKey, context.previousUserData);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: userGameKey,
-      });
-    },
-  });
+  const mutateAddToLibrary = useOptimisticUpdating(userGameKey, addGameToList);
+  const mutateRemoveFromLibrary = useOptimisticUpdating(
+    userGameKey,
+    removeGameFromList,
+  );
+  const mutateUpdateUserGameData = useOptimisticUpdating(
+    userGameKey,
+    updateUserGameData,
+  );
 
   async function handleAddToLibrary() {
     if (!userGameData) {
-      const data = {
-        userId: auth.user.id,
-        rawgGameId: params.id,
-        status: '',
-        notes: 'test',
-      };
-
-      mutateAddToLibrary({
-        data: data,
+      mutateAddToLibrary.mutate({
+        data: {
+          userId: auth.user.id,
+          rawgGameId: params.id,
+          status: '',
+          notes: 'test',
+        },
       });
     }
   }
@@ -131,31 +95,60 @@ export default function GameDetailPage() {
   async function handleRemoveFromLibrary() {
     // if action == remove from library
     if (userGameData) {
-      mutateRemoveFromLibrary({ id: userGameData.id });
+      mutateRemoveFromLibrary.mutate({ id: userGameData.id });
     }
   }
 
   async function handleStatusChange(status) {
-    const updatedData = {
-      ...userGameData,
-      status: status,
-    };
-
-    mutateUpdateUserGameData({
+    mutateUpdateUserGameData.mutate({
       id: userGameData.id,
-      gameData: updatedData,
+      gameData: {
+        ...userGameData,
+        status,
+      },
     });
   }
 
+  function handleUpdateNote(updatedNote) {
+    mutateUpdateUserGameData.mutate({
+      id: userGameData.id,
+      gameData: {
+        ...userGameData,
+        notes: updatedNote,
+      },
+    });
+  }
+
+  // Edit notes handlers
+  function handleOpenModal() {
+    setNotesModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setNotesModalOpen(false);
+  }
+
   return (
-    <GameDetails
-      gameData={gameData}
-      isLoading={isGameFetching}
-      userGameData={userGameData}
-      onAddToLibrary={handleAddToLibrary}
-      onRemoveFromLibrary={handleRemoveFromLibrary}
-      onStatusChange={handleStatusChange}
-    />
+    <>
+      <GameDetails
+        gameData={gameData}
+        isLoading={isGameFetching}
+        userGameData={userGameData}
+        onAddToLibrary={handleAddToLibrary}
+        onRemoveFromLibrary={handleRemoveFromLibrary}
+        onStatusChange={handleStatusChange}
+        onEditNote={handleOpenModal}
+      />
+
+      <EditNotesModal
+        gameTitle={gameData?.name}
+        open={notesModalOpen}
+        userGameData={userGameData}
+        onClose={handleCloseModal}
+        onUpdateNote={handleUpdateNote}
+        isUpdating={mutateUpdateUserGameData.isPending}
+      />
+    </>
   );
 }
 

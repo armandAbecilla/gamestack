@@ -1,6 +1,7 @@
 import GameDetailsSkeleton from './skeleton-loaders/GameDetails';
 import Button from './UI/Button';
 import FancySelect from '../components/UI/FancySelect';
+
 import { statusOptions } from '../data/dropdowns';
 
 export default function GameDetails({
@@ -10,6 +11,7 @@ export default function GameDetails({
   onRemoveFromLibrary,
   userGameData,
   onStatusChange,
+  onEditNote,
 }) {
   const platforms = gameData
     ? gameData.platforms.map((item, index) => (
@@ -55,7 +57,7 @@ export default function GameDetails({
   return (
     <>
       {gameData && !isLoading && (
-        <div>
+        <div className='pb-20'>
           <div className='flex flex-col gap-5 xl:flex-row'>
             <img
               className='aspect-auto max-w-[500px] object-cover xl:h-[700px]'
@@ -97,9 +99,14 @@ export default function GameDetails({
                 {!onUserList ? (
                   <Button onClick={onAddToLibrary}>Add to Library</Button>
                 ) : (
-                  <Button onClick={onRemoveFromLibrary}>
-                    Remove from Library
-                  </Button>
+                  <>
+                    <Button onClick={onRemoveFromLibrary}>
+                      Remove from Library
+                    </Button>
+                    <Button className='ml-4' textOnly onClick={onEditNote}>
+                      Edit note
+                    </Button>
+                  </>
                 )}
               </div>
 
@@ -112,8 +119,20 @@ export default function GameDetails({
             </div>
           </div>
 
+          {userGameData && (
+            <div className='mt-4 pt-4'>
+              <h4 className='font-heading text-xl text-stone-200'>
+                User notes:
+              </h4>
+              {userGameData?.notes && <p>{userGameData?.notes}</p>}
+              {!userGameData?.notes && <p>No user notes for this game.</p>}
+            </div>
+          )}
+
           <div className='mt-4 border-t border-stone-700 pt-4'>
-            <h4 className='text-xl text-stone-200'>PC System Requirements</h4>
+            <h4 className='font-heading text-xl text-stone-200'>
+              PC System Requirements
+            </h4>
 
             <div className='flex flex-col gap-4 xl:flex-row xl:gap-15'>
               <div className='mt-4 basis-1/2'>{minimumRequirement}</div>

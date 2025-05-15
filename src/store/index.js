@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import authReducer from './auth';
-import gamesReducer from './games';
+// import gamesReducer from './games';
 import userActionsReducer from './userActions';
 
 function getUserFromLocalStorage() {
@@ -25,7 +25,7 @@ function getUserFromLocalStorage() {
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    games: gamesReducer,
+    // games: gamesReducer,
     userActions: userActionsReducer,
   },
   preloadedState: getUserFromLocalStorage(),

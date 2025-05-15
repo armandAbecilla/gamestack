@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
-import EditNoteModal from '../EditNotesModal';
 
 export default function DefaultLayout() {
   return (
@@ -9,7 +8,6 @@ export default function DefaultLayout() {
       <main>
         <Outlet />
       </main>
-      <EditNoteModal />
     </div>
   );
 }

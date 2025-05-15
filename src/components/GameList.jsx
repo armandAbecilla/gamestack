@@ -8,16 +8,21 @@ import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUserGames, MAX_PAGE_SIZE } from '../api/games';
 
-export default function GameList() {
+export default function GameList({ statusFilter }) {
   const auth = useSelector((state) => state.auth);
   // Pagination state
   const [page, setPage] = useState(1);
 
   // react query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['games', page],
+    queryKey: ['games', page, statusFilter],
     queryFn: ({ signal }) =>
-      fetchUserGames({ signal, userId: auth.user.id, page: page }),
+      fetchUserGames({
+        signal,
+        userId: auth.user.id,
+        page: page,
+        status: statusFilter,
+      }),
     staleTime: 1000 * 60 * 10, // 10 minutes
     cacheTime: 1000 * 60 * 15, // Keep in memory longer
     refetchOnMount: false,

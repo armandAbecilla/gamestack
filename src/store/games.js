@@ -1,3 +1,11 @@
+/*
+ * ╔════════════════════════════════════════════════════╗
+ * ║                                                    ║
+ * ║ This is an unused code. Use this as reference only ║
+ * ║                                                    ║
+ * ╚════════════════════════════════════════════════════╝
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchUserGames } from './games-actions';
 
