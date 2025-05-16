@@ -1,6 +1,7 @@
 // components
 import GameCard from './GameCard';
 import Pagination from './UI/Pagination';
+import GamesListSkeleton from './skeleton-loaders/GamesList';
 
 // react hooks
 import { useEffect, useState } from 'react';
@@ -46,7 +47,7 @@ export default function GameList({ filters }) {
   }
 
   if (isLoading) {
-    return <p className='text-center text-4xl'>Getting your games...</p>;
+    return <GamesListSkeleton />;
   }
 
   if (!isLoading && data.count === 0) {
