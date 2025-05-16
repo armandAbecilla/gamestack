@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton';
 export default function GamesListSkeleton() {
   return (
-    <div className='grid grid-cols-4 gap-4'>
+    <div className='grid grid-cols-2 gap-4 xl:grid-cols-4'>
       {Array.from({ length: 12 }).map((_, index) => (
         <div key={index}>
           <Skeleton
