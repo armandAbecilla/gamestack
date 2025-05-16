@@ -13,44 +13,41 @@ export default function GameDetails({
   onStatusChange,
   onEditNote,
 }) {
-  const platforms = gameData
-    ? gameData.platforms.map((item, index) => (
-        <span key={item.platform.id}>
-          {item.platform.name}
-          {index !== gameData.platforms.length - 1 ? ', ' : ''}
-        </span>
-      ))
-    : [];
-
-  const developers = gameData
-    ? gameData.developers.map(
-        (devs, index) =>
-          `${devs.name}${index !== gameData.developers.length - 1 ? ', ' : ''}`,
-      )
-    : [];
-
-  const pcPlatform = gameData
-    ? gameData.platforms.find((item) => item.platform.name === 'PC')
-    : null;
-
-  // System Requirements
-  const minimumRequirement = pcPlatform ? (
-    <span className='mb-1 block whitespace-pre-line'>
-      {pcPlatform?.requirements?.minimum ||
-        'Minimum requirements not yet available'}
-    </span>
-  ) : undefined;
-  const recommendedRequirement = pcPlatform ? (
-    <span className='mb-1 block whitespace-pre-line'>
-      {pcPlatform?.requirements?.recommended ||
-        'Recommended requirements not yet available'}
-    </span>
-  ) : undefined;
-
   //  skeleton loader
   if (isLoading) {
     return <GameDetailsSkeleton />;
   }
+
+  const platforms = gameData.platforms.map((item, index) => (
+    <span key={item.platform.id}>
+      {item.platform.name}
+      {index !== gameData.platforms.length - 1 ? ', ' : ''}
+    </span>
+  ));
+
+  const developers = gameData.developers.map(
+    (devs, index) =>
+      `${devs.name}${index !== gameData.developers.length - 1 ? ', ' : ''}`,
+  );
+
+  const pcPlatform = gameData.platforms.find(
+    (item) => item.platform.name === 'PC',
+  );
+
+  // System Requirements
+  const minimumRequirement = (
+    <span className='mb-1 block whitespace-pre-line'>
+      {pcPlatform?.requirements?.minimum ||
+        'Minimum requirements not yet available'}
+    </span>
+  );
+
+  const recommendedRequirement = (
+    <span className='mb-1 block whitespace-pre-line'>
+      {pcPlatform?.requirements?.recommended ||
+        'Recommended requirements not yet available'}
+    </span>
+  );
 
   const onUserList = userGameData && !!userGameData;
 
