@@ -62,6 +62,7 @@ export default function Sidebar({ onFilterChange }) {
               id={status.value}
               label={status.label}
               value={status.value}
+              checked={filters?.status === status.value}
               onClick={() => handleStatusSelect(status.value)}
             />
           ))}
