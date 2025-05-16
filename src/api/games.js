@@ -7,14 +7,18 @@ export const fetchUserGames = async ({
   signal,
   userId,
   page,
-  status,
+  filters,
   limit = MAX_PAGE_SIZE,
 }) => {
   try {
     let url = `${projectConfig.API_URL}/games/user/${userId}?page=${page}&limit=${limit}`;
 
-    if (status) {
-      url += '&status=' + status;
+    if (filters?.status) {
+      url += '&status=' + filters.status;
+    }
+
+    if (filters?.title) {
+      url += '&title=' + filters.title;
     }
 
     const response = await axios.get(url, { signal: signal });
@@ -77,7 +81,7 @@ export const updateUserGameData = async ({ signal, id, gameData }) => {
     );
 
     return response.data ?? null;
-  } catch {
+  } catch (e) {
     return new Response(
       {
         message: e.message || 'Failed to update data.',

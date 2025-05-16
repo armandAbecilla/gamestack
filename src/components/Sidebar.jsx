@@ -1,44 +1,72 @@
-import Button from './UI/Button';
-export default function Sidebar({ onStatusSelect }) {
+// import Button from './UI/Button';
+// import Checkbox from './UI/Checkbox';
+import Accordion from './UI/Accordion';
+import Radio from './UI/Radio';
+
+import { statusOptions } from '../data/dropdowns';
+import { useEffect, useState } from 'react';
+
+export default function Sidebar({ onFilterChange }) {
+  const [filters, setFilters] = useState({
+    title: '',
+    status: '',
+  });
+
+  const [titleInput, setTitleInput] = useState('');
+
+  useEffect(() => {
+    onFilterChange(filters);
+  }, [filters, onFilterChange]);
+
   function handleStatusSelect(status) {
-    onStatusSelect(status);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      status: status,
+    }));
+  }
+
+  function handleInputChange(e) {
+    setTitleInput(e.target.value);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      title: e.target.value,
+    }));
   }
 
   return (
     <div className='flex flex-col'>
-      <h4 className='font-heading mb-4'>Filter by Status</h4>
-      <div className='flex w-full flex-col gap-2'>
-        <Button
-          onClick={() => handleStatusSelect('')}
-          className='rounded-full! bg-stone-400! text-black hover:bg-stone-400/90!'
-        >
-          All
-        </Button>
-        <Button
-          onClick={() => handleStatusSelect('playing')}
-          className='bg-playing! hover:bg-playing/90! rounded-full! text-black'
-        >
-          Playing
-        </Button>
-        <Button
-          onClick={() => handleStatusSelect('completed')}
-          className='bg-darkgreen! hover:bg-darkgreen/90! rounded-full! text-white'
-        >
-          Completed
-        </Button>
-        <Button
-          onClick={() => handleStatusSelect('backlog')}
-          className='bg-backlog! hover:bg-backlog/90! rounded-full! text-white'
-        >
-          Backlog
-        </Button>
-        <Button
-          onClick={() => handleStatusSelect('wishlist')}
-          className='bg-wishlist! hover:bg-wishlist/90! rounded-full! text-stone-800'
-        >
-          Wishlist
-        </Button>
+      <div className='mb-4 flex flex-col'>
+        <label>Search library by title</label>
+        <input
+          className='mt-2 w-full rounded-sm border border-stone-500 bg-stone-100 px-2 text-lg text-stone-800'
+          type='text'
+          onChange={handleInputChange}
+          value={titleInput}
+        ></input>
       </div>
+
+      <Accordion label='Filter by Status' isOpen>
+        <div className='flex flex-col gap-1'>
+          <Radio
+            name='status'
+            id='all'
+            label='All'
+            value='all'
+            defaultChecked
+            onClick={() => handleStatusSelect('')}
+          />
+          {statusOptions.map((status) => (
+            <Radio
+              key={status.value}
+              name='status'
+              id={status.value}
+              label={status.label}
+              value={status.value}
+              onClick={() => handleStatusSelect(status.value)}
+            />
+          ))}
+        </div>
+      </Accordion>
     </div>
   );
 }

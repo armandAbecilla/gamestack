@@ -3,29 +3,40 @@ import GameCard from './GameCard';
 import Pagination from './UI/Pagination';
 
 // react hooks
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
+import querySelector from '../api/index';
 import { fetchUserGames, MAX_PAGE_SIZE } from '../api/games';
 
-export default function GameList({ statusFilter }) {
+export default function GameList({ filters }) {
   const auth = useSelector((state) => state.auth);
   // Pagination state
   const [page, setPage] = useState(1);
 
-  const gamesQueryKey = statusFilter
-    ? ['games', page, statusFilter]
-    : ['games', page];
+  const gamesQueryKey =
+    filters?.status || filters?.title
+      ? ['games', page, filters]
+      : ['games', page];
+
+  useEffect(() => {
+    querySelector.invalidateQueries(['games']);
+  }, [filters]);
 
   // react query
-  const { data, isLoading, isError, error } = useQuery({
+  const {
+    data,
+    isPending: isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: gamesQueryKey,
     queryFn: ({ signal }) =>
       fetchUserGames({
         signal,
         userId: auth.user.id,
         page: page,
-        status: statusFilter,
+        filters: filters,
       }),
   });
 
@@ -38,7 +49,7 @@ export default function GameList({ statusFilter }) {
     return <p className='text-center text-4xl'>Getting your games...</p>;
   }
 
-  if (!isLoading && data.count == 0) {
+  if (!isLoading && data.count === 0) {
     return (
       <p className='text-center text-4xl'>
         Start adding games to your backlog now!

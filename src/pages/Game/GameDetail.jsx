@@ -70,7 +70,6 @@ export default function GameDetailPage() {
 
   const mutateAddToLibrary = useOptimisticUpdating(userGameKey, addGameToList, {
     onSuccess: () => {
-      console.log('tangina ');
       queryClient.invalidateQueries({
         queryKey: ['games'],
       });
@@ -91,6 +90,7 @@ export default function GameDetailPage() {
         data: {
           userId: auth.user.id,
           rawgGameId: params.id,
+          rawgGameTitle: gameData.name,
           status: '',
           notes: 'test',
         },

@@ -1,23 +1,27 @@
 import Search from '../components/Search';
 import GameList from '../components/GameList';
 import Sidebar from '../components/Sidebar';
+import useDebounce from '../hooks/useDebounce';
 import { useState } from 'react';
-export default function HomePage() {
-  const [statusSelected, setStatusSelected] = useState(null);
 
-  function handleStatusSelect(filter) {
-    setStatusSelected(filter);
+export default function HomePage() {
+  const [filters, setFilters] = useState({});
+  const deboucedFilters = useDebounce(filters, 1000);
+
+  function handleFilterChange(newFilters) {
+    setFilters(newFilters);
   }
 
   return (
     <>
       <Search />
-      <div className='mt-4 flex flex-col gap-10 xl:flex-row xl:gap-4'>
-        <div className='xl:w-1/6'>
-          <Sidebar onStatusSelect={handleStatusSelect} />
+      <div className='mt-10 flex flex-col gap-10 xl:flex-row xl:gap-8'>
+        <div className='glass-black min-h-[400px] rounded-sm border border-stone-600 p-4 xl:w-1/4'>
+          <Sidebar onFilterChange={handleFilterChange} />
         </div>
+
         <div className='w-full'>
-          <GameList statusFilter={statusSelected} />
+          <GameList filters={deboucedFilters} />
         </div>
       </div>
     </>
