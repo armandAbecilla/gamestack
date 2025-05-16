@@ -16,7 +16,7 @@ export default function Sidebar({ onFilterChange }) {
 
   useEffect(() => {
     onFilterChange(filters);
-  }, [filters, onFilterChange]);
+  }, [filters]);
 
   function handleStatusSelect(status) {
     setFilters((prevFilters) => ({

@@ -1,6 +1,6 @@
 import GameDetails from '../../components/GameDetails';
 import EditNotesModal from '../../components/EditNotesModal';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -13,6 +13,7 @@ import {
   updateUserGameData,
 } from '../../api/games';
 import { useState } from 'react';
+import Button from '../../components/UI/Button';
 
 const useOptimisticUpdating = (queryKey, mutationFn, options = {}) => {
   return useMutation({
@@ -48,6 +49,7 @@ export default function GameDetailPage() {
   const params = useParams();
   const userGameKey = ['userGame', params.id, auth.user.id]; // keys for queryKey
   const [notesModalOpen, setNotesModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // game information
   const { data: gameData, isPending: isGameFetching } = useQuery({
@@ -136,6 +138,9 @@ export default function GameDetailPage() {
 
   return (
     <>
+      <Button onClick={() => navigate(-1)} className='mb-4 text-lg' textOnly>
+        ← Back to your library
+      </Button>
       <GameDetails
         gameData={gameData}
         isLoading={isGameFetching}
