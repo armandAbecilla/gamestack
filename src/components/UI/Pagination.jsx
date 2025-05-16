@@ -28,7 +28,7 @@ export default function Pagination({
       <div className={paginatingItemsClassNames}>{paginatedItems}</div>
 
       {totalItems > pageSize && (
-        <div className='mt-6 flex'>
+        <div className='my-6 flex'>
           <ul className='mx-auto flex justify-center gap-2 rounded-full border border-stone-500 bg-stone-100/5 px-4 shadow backdrop-blur-md'>
             {/* <li>
             <button

@@ -38,6 +38,7 @@ export default function GameList({ filters }) {
         userId: auth.user.id,
         page: page,
         filters: filters,
+        limit: MAX_PAGE_SIZE,
       }),
   });
 

@@ -1,7 +1,7 @@
 import { projectConfig } from '../config';
 import axios from 'axios';
 
-export const MAX_PAGE_SIZE = 25;
+export const MAX_PAGE_SIZE = 20;
 
 export const fetchUserGames = async ({
   signal,
